@@ -55,18 +55,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Dash"",
+                    ""name"": ""Ability"",
                     ""type"": ""Button"",
                     ""id"": ""57db35bf-254e-425a-98d5-1c9f77bb9f57"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Cluck"",
-                    ""type"": ""Button"",
-                    ""id"": ""052726fb-fc88-465b-926d-46455050b72a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -125,7 +116,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Dash"",
+                    ""action"": ""Ability"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -136,29 +127,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f6bfc448-5c1e-4a26-b397-2c8eb0a5e1bd"",
-                    ""path"": ""<Keyboard>/v"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Cluck"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9e874a18-648d-4221-b556-11de160b7106"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Cluck"",
+                    ""action"": ""Ability"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -266,8 +235,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Game_EnableUI = m_Game.FindAction("EnableUI", throwIfNotFound: true);
         m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
         m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
-        m_Game_Dash = m_Game.FindAction("Dash", throwIfNotFound: true);
-        m_Game_Cluck = m_Game.FindAction("Cluck", throwIfNotFound: true);
+        m_Game_Ability = m_Game.FindAction("Ability", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_DisableUI = m_UI.FindAction("DisableUI", throwIfNotFound: true);
@@ -335,8 +303,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_EnableUI;
     private readonly InputAction m_Game_Move;
     private readonly InputAction m_Game_Look;
-    private readonly InputAction m_Game_Dash;
-    private readonly InputAction m_Game_Cluck;
+    private readonly InputAction m_Game_Ability;
     public struct GameActions
     {
         private @InputControls m_Wrapper;
@@ -344,8 +311,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         public InputAction @EnableUI => m_Wrapper.m_Game_EnableUI;
         public InputAction @Move => m_Wrapper.m_Game_Move;
         public InputAction @Look => m_Wrapper.m_Game_Look;
-        public InputAction @Dash => m_Wrapper.m_Game_Dash;
-        public InputAction @Cluck => m_Wrapper.m_Game_Cluck;
+        public InputAction @Ability => m_Wrapper.m_Game_Ability;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -364,12 +330,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
-            @Dash.started += instance.OnDash;
-            @Dash.performed += instance.OnDash;
-            @Dash.canceled += instance.OnDash;
-            @Cluck.started += instance.OnCluck;
-            @Cluck.performed += instance.OnCluck;
-            @Cluck.canceled += instance.OnCluck;
+            @Ability.started += instance.OnAbility;
+            @Ability.performed += instance.OnAbility;
+            @Ability.canceled += instance.OnAbility;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -383,12 +346,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
-            @Dash.started -= instance.OnDash;
-            @Dash.performed -= instance.OnDash;
-            @Dash.canceled -= instance.OnDash;
-            @Cluck.started -= instance.OnCluck;
-            @Cluck.performed -= instance.OnCluck;
-            @Cluck.canceled -= instance.OnCluck;
+            @Ability.started -= instance.OnAbility;
+            @Ability.performed -= instance.OnAbility;
+            @Ability.canceled -= instance.OnAbility;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -457,8 +417,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         void OnEnableUI(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
-        void OnDash(InputAction.CallbackContext context);
-        void OnCluck(InputAction.CallbackContext context);
+        void OnAbility(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

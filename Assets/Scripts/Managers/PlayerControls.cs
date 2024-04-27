@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Characters;
 using UnityEngine;
 
 public static class PlayerControls
@@ -12,8 +13,7 @@ public static class PlayerControls
         _controls = new InputControls();
 
         _controls.Game.EnableUI.performed += _ => EnableUI();
-        _controls.Game.Cluck.performed += _ => player.TryCluck(); // Cooldowns
-        _controls.Game.Dash.performed += _ => player.TryDash(); // Cooldowns
+        _controls.Game.Ability.performed += _ => player.TryAbility(); // Cooldowns
         _controls.Game.Look.performed += ctx => player.Look(ctx.ReadValue<Vector2>()); // Cooldowns
         _controls.Game.Move.performed += ctx => player.Move(ctx.ReadValue<Vector2>()); // Cooldowns
         
