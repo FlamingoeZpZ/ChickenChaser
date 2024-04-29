@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8399251365049661277}
   - component: {fileID: 4462816213184270624}
   - component: {fileID: 1856207495504124827}
-  m_Layer: 0
+  - component: {fileID: 7619658073908518256}
+  m_Layer: 7
   m_Name: Bush_Flowers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b88dfa256bc62994ea064fcb4bbad8f0, type: 2}
+  - {fileID: 2100000, guid: c6e9b73dc9ce72646bde1379a1c26547, type: 2}
   - {fileID: 2100000, guid: 4e8cde09845f701458c5a25b3ebdd487, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -84,3 +85,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &7619658073908518256
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271299503354191998}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.4
+  m_Center: {x: 0.014435589, y: 0.15356636, z: -0.085100755}

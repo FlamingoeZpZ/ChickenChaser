@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Utilities;
@@ -10,8 +9,10 @@ namespace Ability
         [Header("Dash")] 
         [SerializeField] private float dashDistance;
         [SerializeField] private float dashDuration;
-        [SerializeField] private float dashCooldown;
 
+        [Header("Effects")]
+        [SerializeField] private ParticleSystem feathers;
+        
         private Rigidbody _rb;
         private bool _canDash = true;
         private float _radius;
@@ -25,6 +26,8 @@ namespace Ability
     
         private IEnumerator ActivateAbility(Vector3 direction)
         {
+            feathers.transform.forward = -transform.forward; // Face the opposite direction of ourselves.
+            feathers.Play();
             _canDash = false;
             Vector3 endPoint =
                 Physics.SphereCast(transform.position, _radius, direction, out RaycastHit hit, dashDistance, StaticUtilities.VisibilityLayer)
@@ -41,10 +44,11 @@ namespace Ability
             }
             transform.position = Vector3.Lerp(transform.position, endPoint, 1);
             _rb.isKinematic = false;
-            yield return new WaitForSeconds(dashCooldown);
+            feathers.Stop();
             _canDash = true;
+            
         }
-        
+
         protected override float AbilityNum()
         {
             return 0;
@@ -53,7 +57,7 @@ namespace Ability
         protected override bool CanActivate()
         {
             //Partially redundant, but you can have an additional cooldown this way.
-            return _canDash && IsReady;
+            return _canDash && base.CanActivate();
         }
 
         protected override void Activate()

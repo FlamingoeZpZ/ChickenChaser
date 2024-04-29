@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Characters;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Ability
 {
@@ -9,12 +10,14 @@ namespace Ability
     {
         
         [SerializeField] private float cooldown;
+
         
         protected bool IsReady = true;
         protected Chicken Owner;
         
         private WaitForSeconds _cooldownDelay;
 
+        
 
         private void Awake()
         {
@@ -23,6 +26,7 @@ namespace Ability
 
         private IEnumerator BeginCooldown()
         {
+            
             IsReady = false;
             yield return _cooldownDelay;
             IsReady = true;
@@ -45,7 +49,10 @@ namespace Ability
         
         protected abstract float AbilityNum();
 
-        protected abstract bool CanActivate();
+        protected virtual bool CanActivate()
+        {
+            return IsReady;
+        }
 
         protected abstract void Activate();
         

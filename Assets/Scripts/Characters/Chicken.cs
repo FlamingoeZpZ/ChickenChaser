@@ -2,6 +2,7 @@ using System;
 using Ability;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Characters
 {
@@ -23,6 +24,11 @@ namespace Characters
         [SerializeField] protected Transform footTransform;
         [SerializeField] protected float footRadius;
         [SerializeField] protected float footDistance;
+
+        [Header("Effects")] 
+        [SerializeField] private ParticleSystem landEffect;
+        [SerializeField] private AudioClip bounceSfx;
+        [SerializeField] private AudioClip bushNoise;
     
         public bool IsGrounded { get; private set; }
         public Vector3 HeadForward => head.forward;
@@ -37,13 +43,21 @@ namespace Characters
         private static Transform _myTransform;
         public static Vector3 PlayerPosition => _myTransform.position;
 
+        private float fallTime;
+
         // Start is called before the first frame update
         void Awake()
         {
             _myTransform = transform;
+            
+            
             _rb = GetComponent<Rigidbody>();
             _abilityBaseController = GetComponent<AbilityBase>();
             _animator = GetComponentInChildren<Animator>();
+            ChickenAnimatorReciever car = transform.GetChild(0).GetComponent<ChickenAnimatorReciever>();
+            car.OnLandEffect += LandEffect;
+            
+            
             float abilityID = _abilityBaseController.BindOwner(this);
             _animator.SetFloat(StaticUtilities.AbilityTypeAnimID, abilityID);
             PlayerControls.Init(this);
@@ -89,7 +103,15 @@ namespace Characters
                 IsGrounded = newGroundedState;
                 //Then we should update our grounded state.
                 _animator.SetBool(StaticUtilities.IsGroundedAnimID, IsGrounded);
+
+                if (IsGrounded)
+                {
+                    LandEffect(Mathf.Max(fallTime / 2, 3));
+                    fallTime = 0;
+                }
             }
+
+            if (!IsGrounded) fallTime += Time.deltaTime;
         }
 
         private void HandleMovement()
@@ -120,6 +142,18 @@ namespace Characters
         {
             Gizmos.color = Color.green;
             GizmosExtras.DrawWireSphereCast(footTransform.position, Vector3.down, footDistance, footRadius);
+        }
+
+        private void LandEffect(float force)
+        {
+            landEffect.emission.SetBurst(0, new ParticleSystem.Burst(0, Random.Range(10,20) * force));
+            landEffect.Play();
+            AudioManager.Instance.PlaySound(bounceSfx, transform.position, 0.25f, force);
+            
+            //If in bush
+            if(Physics.CheckSphere(transform.position, footRadius, StaticUtilities.BushLayer))
+                AudioManager.Instance.PlaySound(bushNoise, transform.position, 0.25f, 15);
+            
         }
     }
 }

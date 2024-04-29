@@ -81,64 +81,7 @@ MonoBehaviour:
   head: {fileID: 4114749771456592268}
   patrolPoints: []
   currentPatrolPoint: 0
-  minIdleTime: 1
-  maxIdleTime: 3
-  maxDetection: 100
-  detectionDecayRate: 5
-  beginDecayCooldown: 3
-  visionFOV: 0.722
-  visionDistance: 22.11
-  sightDetectionValue: 2.66
-  sightDetectionDropOff:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  audioRange: 20
-  audioDetectionValue: 1
-  audioDetectionDropOff:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  stats: {fileID: 11400000, guid: 0f29314d39f62404dacac2c8fb1e63c0, type: 2}
   detectionBar: {fileID: 5743599063453645574}
 --- !u!195 &9097659423936191736
 NavMeshAgent:
@@ -150,7 +93,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.3
-  m_Speed: 3.5
+  m_Speed: 2.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -158,8 +101,8 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.82
-  m_BaseOffset: 0
+  m_Height: 1.8
+  m_BaseOffset: -0.04
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!1 &283165236812196658
@@ -1645,13 +1588,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4615928183887882878}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.65, z: 0.145}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.07637865, y: -0.00250627, z: 0.0011850648, w: 0.997075}
+  m_LocalPosition: {x: 0.000034384622, y: 0.0010960124, z: 0.00028724165}
+  m_LocalScale: {x: 0.010000002, y: 0.010000002, z: 0.010000002}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4509887162062506599}
-  m_Father: {fileID: 4950581005691728281}
+  m_Father: {fileID: 5158485698033456746}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4890582611035210836
 GameObject:
@@ -2538,6 +2481,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 984593745129857565}
+  - {fileID: 4114749771456592268}
   m_Father: {fileID: 4884589224089845147}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7411196912338415958
@@ -3168,7 +3112,6 @@ Transform:
   - {fileID: 5598036978355053365}
   - {fileID: 6629153092617109305}
   - {fileID: 5505979004120370424}
-  - {fileID: 4114749771456592268}
   m_Father: {fileID: 3697731664972989021}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &7223247330993295152

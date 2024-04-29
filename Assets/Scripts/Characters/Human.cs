@@ -15,33 +15,14 @@ namespace Characters
             Chasing // Chase the player, if line of sight is lost, enter the looking state.
         }
 
-        [Header("AI")] [SerializeField] private Transform head;
-        [SerializeField] private Transform[] patrolPoints;
+        [Header("AI")] 
+        [SerializeField] private Transform head;
+        [SerializeField]  private Transform[] patrolPoints;
         [SerializeField] private int currentPatrolPoint;
+        [SerializeField] private AiSo stats;
 
-        [SerializeField, Min(0)] private float minIdleTime = 1;
-        [SerializeField, Min(0)] private float maxIdleTime = 3;
-        
-        [Header("AI|Decay")]
-        [SerializeField] private float maxDetection = 100;
-        [SerializeField] private float detectionDecayRate = 5;
-        [SerializeField] private float beginDecayCooldown = 3;
- 
-        [Header("AI | Vision Cone")] [SerializeField, Range(-1, 1)]
-        private float visionFOV;
-
-        [SerializeField, Min(0)] private float visionDistance;
-        [SerializeField, Min(0)] private float sightDetectionValue = 2;
-        [SerializeField] private AnimationCurve sightDetectionDropOff;
-
-
-        [Header("AI | Audio")] [SerializeField, Min(0)]
-        private float audioRange;
-
-        [SerializeField, Min(0)] private float audioDetectionValue = 1;
-        [SerializeField] private AnimationCurve audioDetectionDropOff;
-
-        [Header("In Game")] [SerializeField] private MeshRenderer detectionBar;
+        [Header("In Game")] 
+        [SerializeField] private MeshRenderer detectionBar;
         private Material _detectionBarMat;
 
         private float _currentDetection;
@@ -61,10 +42,9 @@ namespace Characters
             get => _currentDetection;
             private set
             {
-                _currentDetection = Mathf.Clamp(value, 0, maxDetection);
-                float detectPerc = _currentDetection / maxDetection;
+                _currentDetection = Mathf.Clamp(value, 0, stats.MaxDetection);
+                float detectPerc = _currentDetection / stats.MaxDetection;
                 _detectionBarMat.SetFloat(StaticUtilities.FillMatID, detectPerc);
-                print("Detection State Change: " + detectPerc);
                 if (_myState != EHumanState.Chasing && _myState != EHumanState.Looking)
                 {
                     //Enter looking state.
@@ -98,10 +78,12 @@ namespace Characters
             
             //Sample the curve, based on the distance. (1 is close, and 0 is far.)
 
-            float percentDistance =  1 - (distance / audioRange);
+            float percentDistance =  1 - (distance / stats.AudioRange);
 
-            CurrentDetection += percentDistance * audioDetectionValue;
-
+            CurrentDetection += percentDistance * stats.AudioDetectionValue;
+        
+            Debug.DrawLine(head.position,location, Color.yellow, 0.5f );
+            
             if (!_canDetectionDecay) return;
             if(_decayTimer != null) StopCoroutine(_decayTimer);
             _decayTimer = StartCoroutine(BeginDecayCooldown());
@@ -115,7 +97,7 @@ namespace Characters
             
             if (_isDetectionDecaying)
             {
-                CurrentDetection -= detectionDecayRate * Time.deltaTime;
+                CurrentDetection -= stats.DetectionDecayRate * Time.deltaTime;
             }
 
             if (_agent.remainingDistance <= _agent.stoppingDistance && _myState == EHumanState.Pathing)
@@ -134,7 +116,7 @@ namespace Characters
         void EnterIdle()
         {
             _myState = EHumanState.Idle;
-            _delayState = StartCoroutine(EnterStateAfterDelay(Random.Range(minIdleTime, maxIdleTime), EHumanState.Pathing));
+            _delayState = StartCoroutine(EnterStateAfterDelay(Random.Range(stats.MinIdleTime, stats.MaxIdleTime), EHumanState.Pathing));
         }
 
         void LookDetection()
@@ -147,7 +129,7 @@ namespace Characters
             Vector3 normal = playerLookDirection/distance;
             float dot = Vector3.Dot(head.forward, normal);
 
-            if (dot > visionFOV && distance < visionDistance)
+            if (dot > stats.VisionFOV && distance < stats.VisionDistance)
             {
                 print("I can see you");
                 
@@ -156,8 +138,8 @@ namespace Characters
                     print("I really can see you ya know.");
                     
                     //Compute the distance stuff...
-                    float distancePerc = 1 - (distance / visionDistance);
-                    CurrentDetection += sightDetectionDropOff.Evaluate(distancePerc) * sightDetectionValue; 
+                    float distancePerc = 1 - (distance / stats.VisionDistance);
+                    CurrentDetection += stats.SightDetectionDropOff.Evaluate(distancePerc) * stats.SightDetectionValue; 
                     if(!_canDetectionDecay) return;
                     if(_decayTimer != null) StopCoroutine(_decayTimer);
                     _decayTimer = StartCoroutine(BeginDecayCooldown());
@@ -179,7 +161,7 @@ namespace Characters
         {
             _canDetectionDecay = false;
             _isDetectionDecaying = false;
-            yield return new WaitForSeconds(beginDecayCooldown);
+            yield return new WaitForSeconds(stats.BeginDecayCooldown);
             _isDetectionDecaying = true;
             _canDetectionDecay = true;
         }
@@ -202,14 +184,14 @@ namespace Characters
             }
         
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(head.position, audioRange);
-            Gizmos.DrawRay(head.position, head.forward * visionDistance);
+            Gizmos.DrawWireSphere(head.position, stats.AudioRange);
+            Gizmos.DrawRay(head.position, head.forward * stats.VisionDistance);
         
             //Dot product -- 1 in front, 0 sides, -1 behind.
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(visionFOV) * Mathf.Rad2Deg , head.right) * head.forward * visionDistance);
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(visionFOV) * Mathf.Rad2Deg , -head.right) * head.forward * visionDistance);
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(visionFOV) * Mathf.Rad2Deg , head.up) * head.forward * visionDistance);
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(visionFOV) * Mathf.Rad2Deg , -head.up) * head.forward * visionDistance);
+            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , head.right) * head.forward * stats.VisionDistance);
+            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , -head.right) * head.forward * stats.VisionDistance);
+            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , head.up) * head.forward * stats.VisionDistance);
+            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , -head.up) * head.forward * stats.VisionDistance);
 
             if (!Application.isPlaying) return; // Prevent Errors 
             Gizmos.color = Color.red;
