@@ -8,28 +8,38 @@ namespace Ability
 {
     public abstract class AbilityBase : MonoBehaviour
     {
-        
+        [SerializeField] private Sprite icon;
         [SerializeField] private float cooldown;
-
         
-        protected bool IsReady = true;
         protected Chicken Owner;
         
-        private WaitForSeconds _cooldownDelay;
-
+        private bool _isReady = true;
         
+        private float _currentCooldownTime;
+        private Action<float> _onAbilityUpdated;
 
-        private void Awake()
+        public Sprite Icon => icon;
+
+        public void BindAbilityUpdated(Action<float> action)
         {
-            _cooldownDelay = new WaitForSeconds(cooldown);
+            _onAbilityUpdated += action;
         }
+
+
 
         private IEnumerator BeginCooldown()
         {
-            
-            IsReady = false;
-            yield return _cooldownDelay;
-            IsReady = true;
+            _currentCooldownTime = 0;
+            _isReady = false;
+            while (_currentCooldownTime < cooldown)
+            {
+                _onAbilityUpdated?.Invoke(_currentCooldownTime / cooldown);
+                _currentCooldownTime += Time.deltaTime;
+                yield return null;
+            }
+            //Make sure that it's running!
+            _onAbilityUpdated?.Invoke(1);
+            _isReady = true;
         }
         
         public float BindOwner(Chicken newOwner)
@@ -51,13 +61,10 @@ namespace Ability
 
         protected virtual bool CanActivate()
         {
-            return IsReady;
+            return _isReady;
         }
 
         protected abstract void Activate();
-        
-        
-        
 
     }
 }

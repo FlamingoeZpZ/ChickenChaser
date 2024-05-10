@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    public static Action<Vector3, float> onSoundPlayed;
+    public static Action<Vector3, float, float> onSoundPlayed;
 
     public static AudioManager Instance { get; private set; }
 
@@ -21,7 +21,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySound(AudioClip sound, Vector3 location, float volume, float range)
     {
-        onSoundPlayed?.Invoke(location, volume * range);   
+        //Volume must be between 0-1
+        onSoundPlayed?.Invoke(location, volume, range);   
         AudioSource.PlayClipAtPoint(sound, location, volume);
     }
 

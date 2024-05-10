@@ -1,13 +1,15 @@
 using System;
 using Ability;
+using Game;
+using Interfaces;
+using Managers;
 using UnityEngine;
 using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Characters
 {
-    [RequireComponent(typeof(AbilityBase))]
-    public class Chicken : MonoBehaviour
+    public class Chicken : MonoBehaviour, IVisualDetectable
     {
         [Header("Movement")]
         [SerializeField] private float speed;
@@ -29,7 +31,7 @@ namespace Characters
         [SerializeField] private ParticleSystem landEffect;
         [SerializeField] private AudioClip bounceSfx;
         [SerializeField] private AudioClip bushNoise;
-    
+        [SerializeField] private GameObject caughtCam;
         public bool IsGrounded { get; private set; }
         public Vector3 HeadForward => head.forward;
 
@@ -40,15 +42,20 @@ namespace Characters
         private AbilityBase _abilityBaseController;
         private Animator _animator;
 
-        private static Transform _myTransform;
-        public static Vector3 PlayerPosition => _myTransform.position;
+        public AbilityBase Ability => _abilityBaseController;
+        
+
+        private float visibility = 1;
+
+        //private static Transform _myTransform;
+        //public static Vector3 PlayerPosition => _myTransform.position;
 
         private float fallTime;
 
         // Start is called before the first frame update
         void Awake()
         {
-            _myTransform = transform;
+            //_myTransform = transform;
             
             
             _rb = GetComponent<Rigidbody>();
@@ -63,6 +70,50 @@ namespace Characters
             PlayerControls.Init(this);
             PlayerControls.DisableUI();
             _rb.maxLinearVelocity = maxSpeed;
+            
+           HudManager.Instance.BindPlayer(this);
+            
+        }
+
+        private void OnEnable()
+        {
+            print("Binding Events");
+            EndGoal.onGameWon += OnGameWon;
+            CaptureZone.onGameLoss += OnGameLoss;
+        }
+
+      
+
+        private void OnDisable()
+        {
+            print("Unbinding Events");
+
+            EndGoal.onGameWon -= OnGameWon;
+            CaptureZone.onGameLoss -= OnGameLoss;
+        }
+        
+        private void OnGameLoss()
+        {
+            PlayerControls.EnableUI();
+            
+            //Stop camera movement
+            _moveDirection = Vector3.zero;
+            _lookDirection = Vector2.zero;
+
+            caughtCam.SetActive(true);
+            
+            enabled = false;
+        }
+
+        private void OnGameWon()
+        {
+            print("Player regis won game");
+           PlayerControls.EnableUI();
+           //Stop camera movement
+           //_moveDirection = Vector3.zero;
+           _lookDirection = Vector2.zero;
+
+           _moveDirection = transform.TransformDirection((transform.position - EndGoal.TargetPosition).normalized);
         }
 
         private void FixedUpdate()
@@ -148,12 +199,28 @@ namespace Characters
         {
             landEffect.emission.SetBurst(0, new ParticleSystem.Burst(0, Random.Range(10,20) * force));
             landEffect.Play();
-            AudioManager.Instance.PlaySound(bounceSfx, transform.position, 0.25f, force);
+            AudioManager.Instance.PlaySound(bounceSfx, transform.position, 0.25f, 5 * force);
             
             //If in bush
             if(Physics.CheckSphere(transform.position, footRadius, StaticUtilities.BushLayer))
-                AudioManager.Instance.PlaySound(bushNoise, transform.position, 0.25f, 15);
+                AudioManager.Instance.PlaySound(bushNoise, transform.position, 0.25f, 15 * force);
             
+        }
+
+        public void AddVisibility(float vis)
+        {
+            visibility += vis;
+        }
+
+        public void RemoveVisibility(float vis)
+        {
+            //Prevent any weirdness
+            visibility = Mathf.Max(visibility - vis, 0.1f);
+        }
+
+        public float GetVisibility()
+        {
+            return visibility;
         }
     }
 }

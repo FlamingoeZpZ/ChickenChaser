@@ -1,11 +1,14 @@
 using System.Collections;
+using AI;
+using Interfaces;
+using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.AI;
 using Utilities;
 
 namespace Characters
 {
-    public class Human : MonoBehaviour
+    public class Human : MonoBehaviour, IDetector
     {
         private enum EHumanState
         {
@@ -14,12 +17,8 @@ namespace Characters
             Looking, // Do not move, if line of sight remains for Y seconds, begin chasing, else enter pathing
             Chasing // Chase the player, if line of sight is lost, enter the looking state.
         }
-
-        [Header("AI")] 
-        [SerializeField] private Transform head;
-        [SerializeField]  private Transform[] patrolPoints;
-        [SerializeField] private int currentPatrolPoint;
-        [SerializeField] private AiSo stats;
+        
+        [SerializeField] private AiStats stats;
 
         [Header("In Game")] 
         [SerializeField] private MeshRenderer detectionBar;
@@ -27,176 +26,199 @@ namespace Characters
 
         private float _currentDetection;
         private EHumanState _myState;
-        private bool _canDetectionDecay = true;
         private bool _isDetectionDecaying;
+        private float _detectionModifier;
 
+        private static readonly WaitForSeconds TimerDelay = new WaitForSeconds(0.016f);
         
         private Animator _animator;
+        private PathHandler _pathHandler;
         private NavMeshAgent _agent;
 
-        private Coroutine _delayState;
         private Coroutine _decayTimer;
+        private Coroutine _currentRoutine;
 
-        public float CurrentDetection
+        private void Awake()
         {
-            get => _currentDetection;
-            private set
-            {
-                _currentDetection = Mathf.Clamp(value, 0, stats.MaxDetection);
-                float detectPerc = _currentDetection / stats.MaxDetection;
-                _detectionBarMat.SetFloat(StaticUtilities.FillMatID, detectPerc);
-                if (_myState != EHumanState.Chasing && _myState != EHumanState.Looking)
-                {
-                    //Enter looking state.
-                }
-                else if (_myState ==  EHumanState.Looking && detectPerc >= 1)
-                {
-                    //Begin Chase.
-                    print("I'm comin for you!");
-                }
-            }
-        }
-
-        // Start is called before the first frame update
-        void Awake()
-        {
-            
             _detectionBarMat = detectionBar.material;
             _animator = GetComponentInChildren<Animator>();
+            _pathHandler = GetComponent<PathHandler>();
             _agent = GetComponent<NavMeshAgent>();
-            AudioManager.onSoundPlayed += CheckListen;
-            currentPatrolPoint -= 1;
-            SetNextPatrolPoint();
+            
             _myState = EHumanState.Pathing;
-            CurrentDetection = 0;
-        }
-
-        private void CheckListen(Vector3 location, float volume)
-        {
-            //Get the distance between us and the location
-            float distance = Vector3.Distance(head.position, location);
+            _agent.speed = stats.BaseMoveSpeed;
             
-            //Sample the curve, based on the distance. (1 is close, and 0 is far.)
+            _currentDetection = 0;
+            _detectionBarMat.SetFloat(StaticUtilities.FillMatID, 0);
 
-            float percentDistance =  1 - (distance / stats.AudioRange);
-
-            CurrentDetection += percentDistance * stats.AudioDetectionValue;
+            _currentRoutine = StartCoroutine(Pathing());
+            _detectionModifier = stats.IdleStateDetectionModifier;
+        }
         
-            Debug.DrawLine(head.position,location, Color.yellow, 0.5f );
-            
-            if (!_canDetectionDecay) return;
-            if(_decayTimer != null) StopCoroutine(_decayTimer);
-            _decayTimer = StartCoroutine(BeginDecayCooldown());
-        }
-
-        // Update is called once per frame
-        void Update()
+        //This could be optimized via batching, if you're comfortable teaching that.
+        private void Update()
         {
             _animator.SetFloat(StaticUtilities.MoveSpeedAnimID, _agent.velocity.magnitude);
-            LookDetection();
             
             if (_isDetectionDecaying)
             {
-                CurrentDetection -= stats.DetectionDecayRate * Time.deltaTime;
-            }
-
-            if (_agent.remainingDistance <= _agent.stoppingDistance && _myState == EHumanState.Pathing)
-            //if (_agent.isStopped && _myState == EHumanState.Pathing)
-            {
-                EnterIdle();
+                RemoveDetection(stats.DetectionDecayRate * Time.deltaTime);
             }
         }
-
-        void SetNextPatrolPoint()
+        
+        #region AILogic
+        private IEnumerator Idle()
         {
-            _agent.SetDestination(patrolPoints[++currentPatrolPoint % patrolPoints.Length].position);
-        }
-
-
-        void EnterIdle()
-        {
+            print("Entering Idle");
             _myState = EHumanState.Idle;
-            _delayState = StartCoroutine(EnterStateAfterDelay(Random.Range(stats.MinIdleTime, stats.MaxIdleTime), EHumanState.Pathing));
+            yield return new WaitForSeconds(Random.Range(stats.MinIdleTime, stats.MaxIdleTime));
+            _currentRoutine = StartCoroutine(Pathing());
         }
 
-        void LookDetection()
+        private IEnumerator Pathing()
         {
-            //We need to KNOW where every target is...
-            //Take the dot product from our direction to the player position...
-
-            Vector3 playerLookDirection = (Chicken.PlayerPosition - head.position);
-            float distance = playerLookDirection.magnitude;
-            Vector3 normal = playerLookDirection/distance;
-            float dot = Vector3.Dot(head.forward, normal);
-
-            if (dot > stats.VisionFOV && distance < stats.VisionDistance)
+            print("Entering Pathing");
+            _pathHandler.SetNextPatrolPoint(); // Cringe....
+            //This would work, but it checks every frame.
+            _myState = EHumanState.Pathing;
+            
+            //We need to find a path, which is done in a different thread,
+            //so the only way we can actually do this properly every time, is to wait until the thread merges main
+            yield return new WaitWhile(() => _agent.pathPending);
+            
+            // While we have not reached our destination
+            while(!_pathHandler.HasReachedDestination())
             {
-                print("I can see you");
-                
-                if (!Physics.Raycast(head.position, normal, out RaycastHit hit, distance, StaticUtilities.EverythingButChicken))
-                {
-                    print("I really can see you ya know.");
-                    
-                    //Compute the distance stuff...
-                    float distancePerc = 1 - (distance / stats.VisionDistance);
-                    CurrentDetection += stats.SightDetectionDropOff.Evaluate(distancePerc) * stats.SightDetectionValue; 
-                    if(!_canDetectionDecay) return;
-                    if(_decayTimer != null) StopCoroutine(_decayTimer);
-                    _decayTimer = StartCoroutine(BeginDecayCooldown());
-                }
+                //Optimize by caching in start
+                yield return TimerDelay;
             }
-
+            
+            _currentRoutine = StartCoroutine(Idle());
         }
 
-
-        private IEnumerator EnterStateAfterDelay(float duration, EHumanState newState)
+        private IEnumerator Looking(Vector3 target)
         {
-            yield return new WaitForSeconds(duration);
-            SetNextPatrolPoint(); // Cringe....
-            _myState = newState;
+            print("Entering Looking");
+            _myState = EHumanState.Looking;
+            //When entering look state, we need to rotate to face the given location
+            
+            //and we need to start playing the look animation
+            _animator.SetBool(StaticUtilities.IsSearchingAnimID, true);
+            
+            //Let's also modify our spotting multiplier 
+            _detectionModifier = stats.LookingStateDetectionModifier;
+            
+            //Let's move towards the target, but not too close...
+            _agent.SetDestination(Vector3.Lerp(transform.position, target, 0.1f));
+            
+            while(_currentDetection > 0f)
+            {
+                yield return TimerDelay;
+            }
+            
+            //Reverse
+            _animator.SetBool(StaticUtilities.IsSearchingAnimID, false);
+            _detectionModifier = stats.IdleStateDetectionModifier;
+
+            //Go back to track...
+            if(_currentRoutine != null) StopCoroutine(_currentRoutine);
+            _currentRoutine = StartCoroutine(Pathing());
+
+        }
+        
+        //Can only be entered via detection.
+        private void Chasing(Vector3 target)
+        {
+            print("Entering Chase");
+            _myState = EHumanState.Chasing;
+            
+            //Disable the animation if it's still playing
+            _animator.SetBool(StaticUtilities.IsSearchingAnimID, false);
+            
+            //When in chasing state, we will leave the path, and move towards the given location
+            _agent.destination = target;
+            
+            //We also want to begin running, and therefore change the speed to run speed
+            _agent.speed = stats.ChaseMoveSpeed;
+            
+            //While we are chasing, if the player gets to close to us, then they lose.
+            
+            //While chasing, we do not lose detection until we reach the last known location of the player...
+            
+            //We need to find a path, which is done in a different thread,
+            //so the only way we can actually do this properly every time, is to wait until the thread merges main
+
+        }
+        #endregion
+
+        #region Detection
+        public float GetDetection()
+        {
+            return _currentDetection;
         }
 
+        public void AddDetection(Vector3 location, float detection, EDetectionType detectionType)
+        {
+            //This line of code will allow us to ignore "stimuli" while chasing.
+            if (_myState == EHumanState.Chasing && (detectionType & stats.IgnoreWhileChasing) != 0) return;
+            
+            _currentDetection = Mathf.Min(_currentDetection + detection * _detectionModifier, stats.MaxDetection);
+            //print($"Adding detection, {location} --> {detection} * {_detectionModifier} + {_currentDetection} --> {_currentDetection}");
+            float detectPerc = _currentDetection / stats.MaxDetection;
+            _detectionBarMat.SetFloat(StaticUtilities.FillMatID, detectPerc);
+            
+            if (detectPerc >= 0.5f && _myState != EHumanState.Chasing && _myState != EHumanState.Looking)
+            {
+                //Enter looking state.
+                if(_currentRoutine != null) StopCoroutine(_currentRoutine);
+                _currentRoutine = StartCoroutine(Looking(location));
+            }
+            else if (detectPerc >= 1f)
+            {
+                //Begin Chase.
+                if (_myState == EHumanState.Looking)
+                {
+                    //At this point cR cannot be null.
+                    if(_currentRoutine != null) StopCoroutine(_currentRoutine);
+                    Chasing(location);
+                }
+                
+                //Update target location
+                _agent.SetDestination(location);
+            }
+            
+            //Restarting coroutines is expensive, it uses around 200 bytes of ram.
+            //There are better ways to reset the timer, can you think of any?
+            if(_decayTimer != null) StopCoroutine(_decayTimer);
+            _decayTimer = StartCoroutine(BeginDecayCooldown());
+        }
+        
+        private void RemoveDetection(float amount)
+        {
+            _currentDetection = Mathf.Max(_currentDetection - amount, 0);
+            //print($"Removing detection, {_currentDetection} = {_currentDetection} - {amount}");
 
+            float detectPerc = _currentDetection / stats.MaxDetection;
+            _detectionBarMat.SetFloat(StaticUtilities.FillMatID, detectPerc);
+
+            
+            if (detectPerc <= 0.9f && _myState == EHumanState.Chasing)
+            {
+                StopCoroutine(_currentRoutine);
+                _currentRoutine = StartCoroutine(Looking(_agent.destination));
+                _agent.speed = stats.BaseMoveSpeed;
+            }
+            
+
+            if (detectPerc == 0) _isDetectionDecaying = false;
+        }
+        
         private IEnumerator BeginDecayCooldown()
         {
-            _canDetectionDecay = false;
             _isDetectionDecaying = false;
             yield return new WaitForSeconds(stats.BeginDecayCooldown);
             _isDetectionDecaying = true;
-            _canDetectionDecay = true;
         }
-        
-        
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-        
-            for (int i = 0; i < patrolPoints.Length; ++i)
-            {
-                Gizmos.DrawSphere(patrolPoints[i].position, 0.25f);
-                if (i == 0)
-                {
-                    Gizmos.DrawLine(patrolPoints[0].position, patrolPoints[^1].position);
-                    continue;
-                }
-
-                Gizmos.DrawLine(patrolPoints[i-1].position, patrolPoints[i].position);
-            }
-        
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(head.position, stats.AudioRange);
-            Gizmos.DrawRay(head.position, head.forward * stats.VisionDistance);
-        
-            //Dot product -- 1 in front, 0 sides, -1 behind.
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , head.right) * head.forward * stats.VisionDistance);
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , -head.right) * head.forward * stats.VisionDistance);
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , head.up) * head.forward * stats.VisionDistance);
-            Gizmos.DrawRay(head.position, Quaternion.AngleAxis(Mathf.Acos(stats.VisionFOV) * Mathf.Rad2Deg , -head.up) * head.forward * stats.VisionDistance);
-
-            if (!Application.isPlaying) return; // Prevent Errors 
-            Gizmos.color = Color.red;
-            Vector3 d = Chicken.PlayerPosition - transform.position;
-            Gizmos.DrawRay(transform.position, d);
-        }
+        #endregion
     }
 }

@@ -19,9 +19,10 @@ namespace Utilities
         public static readonly int AbilityAnimID = Animator.StringToHash("Ability");
         public static readonly int IsGroundedAnimID = Animator.StringToHash("isGrounded");
         public static readonly int IsSearchingAnimID = Animator.StringToHash("isSearching");
+        public static readonly int CaptureAnimID = Animator.StringToHash("capture");
+        public static readonly int BeginCaptureAnimID = Animator.StringToHash("beginCapture");
 
 
         public static readonly int FillMatID = Shader.PropertyToID("_Fill");
-        
     }
 }

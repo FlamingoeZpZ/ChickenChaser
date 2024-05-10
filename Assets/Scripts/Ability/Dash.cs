@@ -26,7 +26,10 @@ namespace Ability
     
         private IEnumerator ActivateAbility(Vector3 direction)
         {
-            feathers.transform.forward = -transform.forward; // Face the opposite direction of ourselves.
+            //Do not dash upwards.
+            direction = new Vector3(direction.x, 0, direction.z).normalized;
+            
+            feathers.transform.forward = -direction; // Face the opposite direction of ourselves.
             feathers.Play();
             _canDash = false;
             Vector3 endPoint =

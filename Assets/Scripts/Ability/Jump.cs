@@ -10,8 +10,13 @@ namespace Ability
         [Header("Jump")] 
         [SerializeField] private float jumpForce;
 
+        private Rigidbody rb;
 
-        
+        private void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
+        }
+
         protected override float AbilityNum()
         {
             return 2;
@@ -19,13 +24,13 @@ namespace Ability
 
         protected override bool CanActivate()
         {
-            return Owner.IsGrounded && IsReady;
+            return Owner.IsGrounded && base.CanActivate();
         }
 
         protected override void Activate()
         {
             //Apply upwards velocity to ourselves.
-            
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
         
