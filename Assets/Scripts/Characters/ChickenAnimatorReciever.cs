@@ -15,7 +15,7 @@ namespace Characters
         //Magically called via animator
         private void LandEffect(float force)
         {
-            OnLandEffect.Invoke(force);
+            OnLandEffect?.Invoke(force);
         }    
     }
 }
