@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5028092231172587335}
   - component: {fileID: 1546306348207804385}
   - component: {fileID: 4039189154592525231}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lantern
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ GameObject:
   - component: {fileID: 1752711628501580319}
   - component: {fileID: 7710546866533009635}
   - component: {fileID: 8273715864250682543}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: mesh292639347
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 7848919113440141239}
   - component: {fileID: 8223445754120359254}
   - component: {fileID: 8600945857894361547}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

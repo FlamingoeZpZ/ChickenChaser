@@ -16,6 +16,9 @@ namespace Ability
         private Rigidbody _rb;
         private bool _canDash = true;
         private float _radius;
+
+        private const int numSamples = 10;
+        private static readonly Vector3 maxVerical = new Vector3(0,1,0);
         
         private void Awake()
         {
@@ -27,16 +30,45 @@ namespace Ability
         private IEnumerator ActivateAbility(Vector3 direction)
         {
             //Do not dash upwards.
-            direction = new Vector3(direction.x, 0, direction.z).normalized;
+            direction = new Vector3(direction.x, 0, direction.z) * dashDistance;
+            _canDash = false;
+            
+            //Find the highest point on a slope
+            Vector3 origin = transform.position;
+            float yMax = 0;
+            Vector3 start = origin + maxVerical;
+            for (int i = 0; i < numSamples; ++i)
+            {
+                float percent = (float)i / numSamples;
+                if (Physics.Raycast(start + direction * percent, Vector3.down,
+                        out RaycastHit targetHit,
+                        dashDistance, StaticUtilities.VisibilityLayer))
+                {
+                    Debug.DrawRay(start + direction * percent,Vector3.down *  dashDistance,(targetHit.point.y > yMax)?Color.green:Color.red, 3 );
+                    if (targetHit.point.y > yMax) yMax = targetHit.point.y;
+                }
+                else
+                {
+                    Debug.DrawRay(start + direction * percent,Vector3.down *  dashDistance,Color.red, 3 );
+                }
+            }
+
+            // Make sure going upwards actually makes sense by subtracting the goal Y from the current y. Then add back the radius, so we have the true end point.
+            float d = yMax - origin.y + _radius *2;
+            //If it was negative, or 0 just go forward. else, set the target D
+            if(d > 0) direction.y = d; 
+            
+            Debug.Log($"Dashing in direction: {direction}, {yMax} - {origin.y}");
+            direction = direction.normalized;
             
             feathers.transform.forward = -direction; // Face the opposite direction of ourselves.
             feathers.Play();
-            _canDash = false;
+            
             Vector3 endPoint =
-                Physics.SphereCast(transform.position, _radius, direction, out RaycastHit hit, dashDistance, StaticUtilities.VisibilityLayer)
+                Physics.SphereCast(origin, _radius, direction, out RaycastHit hit, dashDistance, StaticUtilities.VisibilityLayer)
                     ?  hit.point + hit.normal * (_radius*2)
                     : direction * dashDistance + transform.position;
-            Debug.DrawLine(transform.position, endPoint, Color.magenta, 5);
+            Debug.DrawLine(origin, endPoint, Color.magenta, 5);
             float curTime = 0;
             _rb.isKinematic = true;
             while (curTime < dashDuration) 
