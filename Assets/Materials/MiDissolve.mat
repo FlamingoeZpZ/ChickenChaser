@@ -46,7 +46,7 @@ Material:
     - _Metallic: 0.494
     - _NoiseScale1: 500
     - _NoiseScale2: 10
-    - _Offset: 0.018
+    - _Offset: 0.011
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 0.514

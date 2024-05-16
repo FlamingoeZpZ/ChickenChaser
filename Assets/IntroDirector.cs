@@ -1,18 +1,40 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class IntroDirector : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private AnimationCurve timeDilation;
+    [SerializeField] private ParticleSystem[] particles;
+    private PlayableDirector _director;
+
+    private void Awake()
     {
-        
+        _director = GetComponent<PlayableDirector>();
+        StartCoroutine(PlayAnimation());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator PlayAnimation()
     {
-        
+        print("Beginning clip");
+        _director.Play();
+        double needed = _director.duration;
+        double actual = 0;
+        while (actual < needed)
+        {
+            float eval = timeDilation.Evaluate((float)actual / (float)needed);
+            actual += eval * Time.deltaTime;
+            _director.time = actual;
+            foreach (var particle in particles)
+            {
+                var main = particle.main;
+                main.simulationSpeed = eval;
+            }
+
+            yield return null;
+        }
+        _director.time = needed;
+        print("Ending clip");
+        _director.Stop();
     }
 }

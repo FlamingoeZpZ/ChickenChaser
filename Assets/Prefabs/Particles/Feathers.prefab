@@ -30,7 +30,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 1.462, z: -2.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2636644467684167271}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -220.821, y: 0, z: 0}
 --- !u!198 &6624566025265921448
@@ -4888,3 +4889,107 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1001 &4309456962136543544
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1977392898016053027}
+    m_Modifications:
+    - target: {fileID: 80139270534471525, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 80139270534471525, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: ShapeModule.type
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 80139270534471525, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: ShapeModule.m_Rotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 80139270534471525, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 80139270534471525, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 80139270534471525, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: InitialModule.gravityModifier.minMaxState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675758558832646395, guid: 61f8ddca288751145acb1fe5a748a7ee,
+        type: 3}
+      propertyPath: m_Name
+      value: LandEffect (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 61f8ddca288751145acb1fe5a748a7ee, type: 3}
+--- !u!4 &2636644467684167271 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2258971284688592735, guid: 61f8ddca288751145acb1fe5a748a7ee,
+    type: 3}
+  m_PrefabInstance: {fileID: 4309456962136543544}
+  m_PrefabAsset: {fileID: 0}
