@@ -1,6 +1,7 @@
 
 using System.Collections;
 using UnityEngine;
+using Utilities;
 
 namespace Ability
 {
@@ -15,9 +16,9 @@ namespace Ability
         [SerializeField,Min(0)] private int maxClucks;
 
 
-        protected override float AbilityNum()
+        public override int AbilityNum()
         {
-            return 1;
+            return StaticUtilities.CluckAnimID;
         }
 
         protected override void Activate()

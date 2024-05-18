@@ -14,9 +14,10 @@ namespace Utilities
     
     
         //Animations
-        public static readonly int AbilityTypeAnimID = Animator.StringToHash("abilityType");
         public static readonly int MoveSpeedAnimID = Animator.StringToHash("moveSpeed");
-        public static readonly int AbilityAnimID = Animator.StringToHash("Ability");
+        public static readonly int CluckAnimID = Animator.StringToHash("Cluck");
+        public static readonly int JumpAnimID = Animator.StringToHash("Jump");
+        public static readonly int DashAnimID = Animator.StringToHash("Dash");
         public static readonly int IsGroundedAnimID = Animator.StringToHash("isGrounded");
         public static readonly int IsSearchingAnimID = Animator.StringToHash("isSearching");
         public static readonly int CaptureAnimID = Animator.StringToHash("capture");

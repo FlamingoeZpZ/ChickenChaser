@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using Characters;
 using UnityEngine;
+using Utilities;
 
 namespace Ability
 {
@@ -17,9 +15,9 @@ namespace Ability
             rb = GetComponent<Rigidbody>();
         }
 
-        protected override float AbilityNum()
+        public override int AbilityNum()
         {
-            return 2;
+            return StaticUtilities.JumpAnimID;
         }
 
         protected override bool CanActivate()

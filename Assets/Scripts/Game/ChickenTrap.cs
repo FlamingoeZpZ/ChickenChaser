@@ -13,21 +13,19 @@ namespace Game
 
         private void Awake()
         {
-            _chicken = transform.GetChild(0).GetComponent<Chicken>();
+            //If we have the chicken, let's bind it... If we don't we must have been spawned in elsewhere.
+            if(transform.GetChild(0).GetChild(0).TryGetComponent(out Chicken c)) AttachChicken(c);
             _myMaterial = GetComponent<MeshRenderer>().material;
-            _chicken.enabled = false;
         }
 
         private void OnTriggerStay(Collider other)
         {
-            if (1 << other.gameObject.layer == StaticUtilities.PlayerLayer)
+            if (1 << other.gameObject.layer != StaticUtilities.PlayerLayer) return;
+            _currentDecayTime += Time.deltaTime;
+            _myMaterial.SetFloat(StaticUtilities.FillMatID, _currentDecayTime / decayTime);
+            if (_currentDecayTime >= decayTime)
             {
-                _currentDecayTime += Time.deltaTime;
-                _myMaterial.SetFloat(StaticUtilities.FillMatID, _currentDecayTime / decayTime);
-                if (_currentDecayTime >= decayTime)
-                {
-                    FreeChicken();
-                }
+                FreeChicken();
             }
         }
 
@@ -36,6 +34,14 @@ namespace Game
             _chicken.transform.parent = null;
             _chicken.enabled = true;
             Destroy(gameObject);
+        }
+
+        public void AttachChicken(Chicken c)
+        {
+            _chicken = c;
+            c.transform.parent = transform.GetChild(0);
+            c.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            c.enabled = false; //Disabling the AI component, SHOULD automatically enable the secondary look at component
         }
     }
 }

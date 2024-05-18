@@ -1,18 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
+using Characters;
 
-public class AIChicken : MonoBehaviour
+public class AIChicken : Chicken
 {
-    // Start is called before the first frame update
-    void Start()
+    
+   //public static
+    private void OnEnable()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        //Initialize Looker Component so we look at the player
+        //TryCluck();
     }
 }

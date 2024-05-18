@@ -4,6 +4,7 @@ using Game;
 using Interfaces;
 using Managers;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utilities;
 using Random = UnityEngine.Random;
 
@@ -16,11 +17,7 @@ namespace Characters
         [SerializeField] private float maxSpeed;
 
         [Header("Looking")] 
-        [SerializeField , Range(0,90)] private float pitchLimit;
-        [SerializeField, Range(0,180)] private float yawLimit;
-        [SerializeField, Range(0.01f,5)] private float yawSpeed;
-        [SerializeField, Range(0.01f,5)] private float pitchSpeed;
-        [SerializeField] private Transform head;
+        [SerializeField] protected Transform head;
 
         [Header("Foot Management")] 
         [SerializeField] protected Transform footTransform;
@@ -31,118 +28,51 @@ namespace Characters
         [SerializeField] private ParticleSystem landEffect;
         [SerializeField] private AudioClip bounceSfx;
         [SerializeField] private AudioClip bushNoise;
-        [SerializeField] private GameObject caughtCam;
+
         public bool IsGrounded { get; private set; }
         public Vector3 HeadForward => head.forward;
 
-        private Vector3 _moveDirection;
-        private Vector2 _lookDirection;
+        protected Vector3 MoveDirection;
+        protected Vector2 LookDirection;
 
         private Rigidbody _rb;
-        private AbilityBase _abilityBaseController;
+        
+        [SerializeField] private AbilityBase abilityBaseController;
+        [SerializeField] private AbilityBase cluckAbility;
+        
         private Animator _animator;
 
-        public AbilityBase Ability => _abilityBaseController;
+        public AbilityBase Ability => abilityBaseController;
+        public AbilityBase Cluck => cluckAbility;
         
-
-        private float visibility = 1;
+        private float _visibility = 1;
 
         //private static Transform _myTransform;
         //public static Vector3 PlayerPosition => _myTransform.position;
 
-        private float fallTime;
+        private float _fallTime;
 
         // Start is called before the first frame update
-        void Awake()
+        protected virtual void Awake()
         {
             //_myTransform = transform;
             
             
             _rb = GetComponent<Rigidbody>();
-            _abilityBaseController = GetComponent<AbilityBase>();
             _animator = GetComponentInChildren<Animator>();
             ChickenAnimatorReciever car = transform.GetChild(0).GetComponent<ChickenAnimatorReciever>();
             car.OnLandEffect += LandEffect;
             
-            
-            float abilityID = _abilityBaseController.BindOwner(this);
-            _animator.SetFloat(StaticUtilities.AbilityTypeAnimID, abilityID);
-            PlayerControls.Init(this);
-            PlayerControls.DisableUI();
             _rb.maxLinearVelocity = maxSpeed;
-            
-           HudManager.Instance.BindPlayer(this);
-            
         }
 
-        private void OnEnable()
-        {
-            print("Binding Events");
-            EndGoal.onGameWon += OnGameWon;
-            CaptureZone.onGameLoss += OnGameLoss;
-        }
-
-      
-
-        private void OnDisable()
-        {
-            print("Unbinding Events");
-
-            EndGoal.onGameWon -= OnGameWon;
-            CaptureZone.onGameLoss -= OnGameLoss;
-        }
-        
-        private void OnGameLoss()
-        {
-            PlayerControls.EnableUI();
-            
-            //Stop camera movement
-            _moveDirection = Vector3.zero;
-            _lookDirection = Vector2.zero;
-
-            caughtCam.SetActive(true);
-            
-            enabled = false;
-        }
-
-        private void OnGameWon()
-        {
-            print("Player regis won game");
-           PlayerControls.EnableUI();
-           //Stop camera movement
-           //_moveDirection = Vector3.zero;
-           _lookDirection = Vector2.zero;
-
-           _moveDirection = transform.TransformDirection((transform.position - EndGoal.TargetPosition).normalized);
-        }
 
         private void FixedUpdate()
         {
             HandleGroundState();
             HandleMovement();
         }
-
-        private void LateUpdate()
-        {
-            _animator.SetFloat(StaticUtilities.MoveSpeedAnimID, _rb.velocity.magnitude);
-            HandleLooking();
-        }
-
-        private void HandleLooking()
-        {
-            float timeShift = Time.deltaTime;
-            float pitchChange = head.localEulerAngles.x - pitchSpeed * _lookDirection.y * timeShift;
-            float yawChange = transform.localEulerAngles.y + yawSpeed * _lookDirection.x * timeShift;
         
-            if (pitchChange > pitchLimit && pitchChange < 180) pitchChange = pitchLimit;
-            else if (pitchChange < 360-pitchLimit && pitchChange > 180) pitchChange = -pitchLimit;
-            if (yawChange > yawLimit && yawChange < 180) yawChange = yawLimit;
-            else if (yawChange < 360-yawLimit && yawChange > 180) yawChange = -yawLimit;
-
-            transform.localEulerAngles = new Vector3(0, yawChange, 0);
-            head.localEulerAngles = new Vector3(pitchChange, 0, 0);
-        }
-
         private void HandleGroundState()
         {
             //We're going to spherecast downwards, and detect if we've hit the floor.
@@ -157,36 +87,43 @@ namespace Characters
 
                 if (IsGrounded)
                 {
-                    LandEffect(Mathf.Max(fallTime / 2, 3));
-                    fallTime = 0;
+                    LandEffect(Mathf.Max(_fallTime / 2, 3));
+                    _fallTime = 0;
                 }
             }
 
-            if (!IsGrounded) fallTime += Time.deltaTime;
+            if (!IsGrounded) _fallTime += Time.deltaTime;
         }
 
         private void HandleMovement()
         {
-            _rb.AddForce(transform.rotation * _moveDirection * speed);
+            _rb.AddForce(transform.rotation * MoveDirection * speed);
             _animator.SetFloat(StaticUtilities.MoveSpeedAnimID, _rb.velocity.magnitude);
         }
 
 
-        public void TryAbility()
+        public void ChangeAbilityState(bool state)
         {
-            if(_abilityBaseController.TryAbility())
-                _animator.SetTrigger(StaticUtilities.AbilityAnimID);
+            if(abilityBaseController.TryAbility()) 
+                _animator.SetTrigger(abilityBaseController.AbilityNum());
         }
 
-    
+
+        public void ChangeCluckState(bool state)
+        {
+            if(cluckAbility.TryAbility()) 
+                _animator.SetTrigger(cluckAbility.AbilityNum());
+        }
+
+
         public void Look(Vector2 readValue)
         {
-            _lookDirection = readValue;
+            LookDirection = readValue;
         }
 
         public void Move(Vector2 readValue)
         {
-            _moveDirection = new Vector3(readValue.x, 0, readValue.y);
+            MoveDirection = new Vector3(readValue.x, 0, readValue.y);
         }
 
         private void OnDrawGizmosSelected()
@@ -209,18 +146,18 @@ namespace Characters
 
         public void AddVisibility(float vis)
         {
-            visibility += vis;
+            _visibility += vis;
         }
 
         public void RemoveVisibility(float vis)
         {
             //Prevent any weirdness
-            visibility = Mathf.Max(visibility - vis, 0.1f);
+            _visibility = Mathf.Max(_visibility - vis, 0.1f);
         }
 
         public float GetVisibility()
         {
-            return visibility;
+            return _visibility;
         }
     }
 }

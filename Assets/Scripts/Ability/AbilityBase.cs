@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using Characters;
 using UnityEngine;
-using UnityEngine.Events;
-
 namespace Ability
 {
     public abstract class AbilityBase : MonoBehaviour
@@ -24,9 +22,7 @@ namespace Ability
         {
             _onAbilityUpdated += action;
         }
-
-
-
+        
         private IEnumerator BeginCooldown()
         {
             _currentCooldownTime = 0;
@@ -41,13 +37,12 @@ namespace Ability
             _onAbilityUpdated?.Invoke(1);
             _isReady = true;
         }
-        
-        public float BindOwner(Chicken newOwner)
+
+        private void Start()
         {
-            Owner = newOwner;
-            return AbilityNum();
+            Owner = GetComponentInParent<Chicken>();
         }
-        
+
         public bool TryAbility()
         {
             //can I dash?
@@ -57,7 +52,7 @@ namespace Ability
             return true;
         }
         
-        protected abstract float AbilityNum();
+        public abstract int AbilityNum();
 
         protected virtual bool CanActivate()
         {

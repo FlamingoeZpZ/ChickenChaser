@@ -84,9 +84,9 @@ namespace Ability
             
         }
 
-        protected override float AbilityNum()
+        public override int AbilityNum()
         {
-            return 0;
+            return StaticUtilities.DashAnimID;
         }
 
         protected override bool CanActivate()
