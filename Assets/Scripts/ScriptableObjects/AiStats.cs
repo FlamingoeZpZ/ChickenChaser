@@ -24,12 +24,14 @@ namespace ScriptableObjects
     [SerializeField] private AudioClip[] heys;
     [SerializeField] private float huhLoudness;
     [SerializeField] private float heyLoudness;
+    [SerializeField] private float timeNeededToTalk = 1;
 
     public AudioClip GetRandomHuh() => huhs[Random.Range(0, huhs.Length)];
     public AudioClip GetRandomHey() => heys[Random.Range(0, heys.Length)];
 
     public float HuhLoudness => huhLoudness;
     public float HeyLoudness => heyLoudness;
+    public float TimeNeededToTalk => timeNeededToTalk;
 
   
     public float MaxDetection => maxDetection;

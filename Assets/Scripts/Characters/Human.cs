@@ -34,6 +34,8 @@ namespace Characters
         private Vector3 suggestedForward;
 
 
+        private float timeSinceLastSpoken;
+
         private static readonly WaitForSeconds TimerDelay = new WaitForSeconds(0.016f);
         
         private Animator _animator;
@@ -131,11 +133,19 @@ namespace Characters
 
         private IEnumerator Looking(Vector3 target)
         {
-            print("Entering Looking");
+            print("Entering Looking: " + Time.timeSinceLevelLoad + ", " + timeSinceLastSpoken);
             _myState = EHumanState.Looking;
+
+            float nt = Time.timeSinceLevelLoad;
+            if (nt - stats.TimeNeededToTalk >= timeSinceLastSpoken)
+            {
+                timeSinceLastSpoken = nt;
+                _source.PlayOneShot(stats.GetRandomHuh(), SettingsManager.currentSettings.SoundVolume * stats.HuhLoudness);
+                //This cannot run, it will infinitely HUH because they detect their own noises as investigation sources
+                //AudioManager.onSoundPlayed.Invoke(transform.position, stats.HuhLoudness, stats.HuhLoudness * 5);
+            }
+          
             
-            _source.PlayOneShot(stats.GetRandomHuh(), SettingsManager.currentSettings.SoundVolume * stats.HuhLoudness);
-            AudioManager.onSoundPlayed.Invoke(transform.position, stats.HuhLoudness, stats.HuhLoudness * 5);
             
             //and we need to start playing the look animation
             _animator.SetBool(StaticUtilities.IsSearchingAnimID, true);
@@ -164,9 +174,12 @@ namespace Characters
         private void Chasing(Vector3 target)
         {
             print("Entering Chase");
+            timeSinceLastSpoken = Time.timeSinceLevelLoad;
+            _myState = EHumanState.Chasing;
+            
             _source.PlayOneShot(stats.GetRandomHey(), SettingsManager.currentSettings.SoundVolume * stats.HeyLoudness);
             AudioManager.onSoundPlayed.Invoke(transform.position, stats.HeyLoudness, stats.HeyLoudness * 10);
-            _myState = EHumanState.Chasing;
+            
             
             //Disable the animation if it's still playing
             _animator.SetBool(StaticUtilities.IsSearchingAnimID, false);

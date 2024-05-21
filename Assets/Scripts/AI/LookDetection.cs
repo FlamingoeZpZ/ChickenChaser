@@ -45,6 +45,9 @@ namespace AI
 
                 if (dot > stats.VisionFOV && distance < stats.VisionDistance)
                 {
+                    #if UNITY_EDITOR
+                    Debug.DrawRay(pos, normal * distance);
+                    #endif
                     if (!Physics.Raycast(pos, normal, out RaycastHit _, distance, StaticUtilities.EverythingButChicken))
                     {
                         float distancePerc = 1 - (distance / stats.VisionDistance);
