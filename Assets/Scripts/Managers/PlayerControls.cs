@@ -1,4 +1,5 @@
 using Characters;
+using UI;
 using UnityEngine;
 
 namespace Managers
@@ -6,20 +7,30 @@ namespace Managers
     public static class PlayerControls
     {
         private static InputControls _controls;
-        private static Chicken p;
-        public static void Init(Chicken player)
+        private static PlayerChicken p;
+        public static void Init(PlayerChicken player)
         {
             p = player;
             _controls = new InputControls();
 
-            _controls.Game.EnableUI.performed += _ => EnableUI();
+           
             
             _controls.Game.Ability.performed += ctx => player.ChangeAbilityState(ctx.ReadValueAsButton()); // Cooldowns
             _controls.Game.Cluck.performed += ctx => player.ChangeCluckState(ctx.ReadValueAsButton()); // Cooldowns
             _controls.Game.Look.performed += ctx => player.Look(ctx.ReadValue<Vector2>()); // Cooldowns
             _controls.Game.Move.performed += ctx => player.Move(ctx.ReadValue<Vector2>()); // Cooldowns
             
-            _controls.UI.DisableUI.performed += _ => DisableUI();
+            _controls.Game.EnableUI.performed += _ =>
+            {
+                Settings.OpenSettings(false);
+                EnableUI();
+            };
+            
+            _controls.UI.DisableUI.performed += _ =>
+            {
+                Settings.CloseSettings();
+                DisableUI();
+            };
         }
 
         public static void EnableUI()

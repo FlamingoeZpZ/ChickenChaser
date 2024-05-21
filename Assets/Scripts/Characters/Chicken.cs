@@ -1,10 +1,6 @@
-using System;
-using Ability;
-using Game;
 using Interfaces;
-using Managers;
+using ScriptableObjects;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities;
 using Random = UnityEngine.Random;
 
@@ -12,38 +8,29 @@ namespace Characters
 {
     public class Chicken : MonoBehaviour, IVisualDetectable
     {
-        [Header("Movement")]
-        [SerializeField] private float speed;
-        [SerializeField] private float maxSpeed;
 
+        [SerializeField] private ChickenStats stats;
+        
         [Header("Looking")] 
         [SerializeField] protected Transform head;
 
         [Header("Foot Management")] 
         [SerializeField] protected Transform footTransform;
-        [SerializeField] protected float footRadius;
-        [SerializeField] protected float footDistance;
 
-        [Header("Effects")] 
+        [Header("Effects")]
         [SerializeField] private ParticleSystem landEffect;
-        [SerializeField] private AudioClip bounceSfx;
-        [SerializeField] private AudioClip bushNoise;
+        
+
 
         public bool IsGrounded { get; private set; }
         public Vector3 HeadForward => head.forward;
 
         protected Vector3 MoveDirection;
         protected Vector2 LookDirection;
+        protected Rigidbody Rb;
+        protected Animator Animator;
 
-        private Rigidbody _rb;
-        
-        [SerializeField] private AbilityBase abilityBaseController;
-        [SerializeField] private AbilityBase cluckAbility;
-        
-        private Animator _animator;
 
-        public AbilityBase Ability => abilityBaseController;
-        public AbilityBase Cluck => cluckAbility;
         
         private float _visibility = 1;
 
@@ -58,12 +45,12 @@ namespace Characters
             //_myTransform = transform;
             
             
-            _rb = GetComponent<Rigidbody>();
-            _animator = GetComponentInChildren<Animator>();
+            Rb = GetComponent<Rigidbody>();
+            Animator = GetComponentInChildren<Animator>();
             ChickenAnimatorReciever car = transform.GetChild(0).GetComponent<ChickenAnimatorReciever>();
             car.OnLandEffect += LandEffect;
             
-            _rb.maxLinearVelocity = maxSpeed;
+            Rb.maxLinearVelocity = stats.MaxSpeed;
         }
 
 
@@ -77,13 +64,13 @@ namespace Characters
         {
             //We're going to spherecast downwards, and detect if we've hit the floor.
             //Basic Spherecast check
-            bool newGroundedState = Physics.SphereCast(footTransform.position, footRadius, Vector3.down, out RaycastHit _, footDistance,
+            bool newGroundedState = Physics.SphereCast(footTransform.position, stats.FootRadius, Vector3.down, out RaycastHit _, stats.FootDistance,
                 StaticUtilities.WallLayer);
             if (newGroundedState != IsGrounded)
             {
                 IsGrounded = newGroundedState;
                 //Then we should update our grounded state.
-                _animator.SetBool(StaticUtilities.IsGroundedAnimID, IsGrounded);
+                Animator.SetBool(StaticUtilities.IsGroundedAnimID, IsGrounded);
 
                 if (IsGrounded)
                 {
@@ -97,23 +84,10 @@ namespace Characters
 
         private void HandleMovement()
         {
-            _rb.AddForce(transform.rotation * MoveDirection * speed);
-            _animator.SetFloat(StaticUtilities.MoveSpeedAnimID, _rb.velocity.magnitude);
+            Rb.AddForce(transform.rotation * MoveDirection * stats.Speed);
+            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, Rb.velocity.magnitude);
         }
 
-
-        public void ChangeAbilityState(bool state)
-        {
-            if(abilityBaseController.TryAbility()) 
-                _animator.SetTrigger(abilityBaseController.AbilityNum());
-        }
-
-
-        public void ChangeCluckState(bool state)
-        {
-            if(cluckAbility.TryAbility()) 
-                _animator.SetTrigger(cluckAbility.AbilityNum());
-        }
 
 
         public void Look(Vector2 readValue)
@@ -129,18 +103,18 @@ namespace Characters
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
-            GizmosExtras.DrawWireSphereCast(footTransform.position, Vector3.down, footDistance, footRadius);
+            GizmosExtras.DrawWireSphereCast(footTransform.position, Vector3.down, stats.FootDistance, stats.FootRadius);
         }
 
         private void LandEffect(float force)
         {
             landEffect.emission.SetBurst(0, new ParticleSystem.Burst(0, Random.Range(10,20) * force));
             landEffect.Play();
-            AudioManager.Instance.PlaySound(bounceSfx, transform.position, 0.25f, 5 * force);
+            AudioManager.Instance.PlaySound(stats.BounceSfx, transform.position, 0.25f, 5 * force);
             
             //If in bush
-            if(Physics.CheckSphere(transform.position, footRadius, StaticUtilities.BushLayer))
-                AudioManager.Instance.PlaySound(bushNoise, transform.position, 0.25f, 15 * force);
+            if(Physics.CheckSphere(transform.position, stats.FootRadius, StaticUtilities.BushLayer))
+                AudioManager.Instance.PlaySound(stats.BushSfx, transform.position, 0.25f, 15 * force);
             
         }
 

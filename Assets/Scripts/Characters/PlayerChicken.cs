@@ -1,5 +1,7 @@
+using Ability;
 using Game;
 using Managers;
+using UI;
 using UnityEngine;
 
 namespace Characters
@@ -9,12 +11,16 @@ namespace Characters
         [Header("Looking")] 
         [SerializeField , Range(0,90)] private float pitchLimit;
         [SerializeField, Range(0,180)] private float yawLimit;
-        [SerializeField, Range(0.01f,5)] private float yawSpeed;
-        [SerializeField, Range(0.01f,5)] private float pitchSpeed;
+        private float _lookSpeed;
     
         [Header("Effects")]
         [SerializeField] private GameObject caughtCam;
-    
+        [SerializeField] private AbilityBase abilityBaseController;
+        [SerializeField] private AbilityBase cluckAbility;
+        
+        public AbilityBase Ability => abilityBaseController;
+        public AbilityBase Cluck => cluckAbility;
+        
         protected override void Awake()
         {
             base.Awake(); 
@@ -28,6 +34,8 @@ namespace Characters
             print("Binding Events");
             EndGoal.onGameWon += OnGameWon;
             CaptureZone.onGameLoss += OnGameLoss;
+            SettingsManager.SaveFile.onLookSenseChanged += OnLookSensChanged;
+            _lookSpeed = SettingsManager.currentSettings.LookSensitivity;
         }
     
     
@@ -37,9 +45,15 @@ namespace Characters
 
             EndGoal.onGameWon -= OnGameWon;
             CaptureZone.onGameLoss -= OnGameLoss;
+            SettingsManager.SaveFile.onLookSenseChanged -= OnLookSensChanged;
         }
-    
-           
+
+        private void OnLookSensChanged(float obj)
+        {
+            _lookSpeed = obj;
+        }
+
+
         private void OnGameLoss()
         {
             PlayerControls.EnableUI();
@@ -68,12 +82,29 @@ namespace Characters
         {
             HandleLooking();
         }
+        
+        
+        public void ChangeAbilityState(bool state)
+        {
+            if(state) cluckAbility.StartAbility();
+            else cluckAbility.StopAbility();
+            Animator.SetTrigger(abilityBaseController.AbilityNum());
+        }
+
+
+        public void ChangeCluckState(bool state)
+        {
+            if(state) cluckAbility.StartAbility();
+            else cluckAbility.StopAbility();
+            Animator.SetTrigger(cluckAbility.AbilityNum());
+        }
+
     
         private void HandleLooking()
         {
             float timeShift = Time.deltaTime;
-            float pitchChange = head.localEulerAngles.x - pitchSpeed * LookDirection.y * timeShift;
-            float yawChange = transform.localEulerAngles.y + yawSpeed * LookDirection.x * timeShift;
+            float pitchChange = head.localEulerAngles.x - _lookSpeed * LookDirection.y * timeShift;
+            float yawChange = transform.localEulerAngles.y + _lookSpeed * LookDirection.x * timeShift;
         
             if (pitchChange > pitchLimit && pitchChange < 180) pitchChange = pitchLimit;
             else if (pitchChange < 360-pitchLimit && pitchChange > 180) pitchChange = -pitchLimit;

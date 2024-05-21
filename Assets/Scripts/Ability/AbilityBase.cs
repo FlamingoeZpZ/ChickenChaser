@@ -8,13 +8,14 @@ namespace Ability
     {
         [SerializeField] private Sprite icon;
         [SerializeField] private float cooldown;
+        [SerializeField] private bool canBeHeld;
         
         protected Chicken Owner;
-        
         private bool _isReady = true;
-        
+        private bool _isBeingHeld;
         private float _currentCooldownTime;
         private Action<float> _onAbilityUpdated;
+        
 
         public Sprite Icon => icon;
 
@@ -25,33 +26,45 @@ namespace Ability
         
         private IEnumerator BeginCooldown()
         {
-            _currentCooldownTime = 0;
-            _isReady = false;
-            while (_currentCooldownTime < cooldown)
+            do
             {
-                _onAbilityUpdated?.Invoke(_currentCooldownTime / cooldown);
-                _currentCooldownTime += Time.deltaTime;
-                yield return null;
-            }
-            //Make sure that it's running!
-            _onAbilityUpdated?.Invoke(1);
-            _isReady = true;
+                yield return new WaitUntil(CanActivate);
+                _currentCooldownTime = 0;
+                _isReady = false;
+                while (_currentCooldownTime < cooldown)
+                {
+                    _onAbilityUpdated?.Invoke(_currentCooldownTime / cooldown);
+                    _currentCooldownTime += Time.deltaTime;
+                    yield return null;
+                }
+
+                //Make sure that it's running!
+                _onAbilityUpdated?.Invoke(1);
+                _isReady = true;
+                Activate();
+            } while (_isBeingHeld && canBeHeld);
         }
 
+        //Start because we want to use Awake in the others. Can also do virtual override optional
         private void Start()
         {
             Owner = GetComponentInParent<Chicken>();
         }
 
-        public bool TryAbility()
+        public void StartAbility()
         {
-            //can I dash?
-            if (!CanActivate()) return false;
-            Activate();
+            _isBeingHeld = true;
             StartCoroutine(BeginCooldown());
-            return true;
+            
+
         }
-        
+
+        public void StopAbility()
+        {
+            _isBeingHeld = false;
+        }
+
+
         public abstract int AbilityNum();
 
         protected virtual bool CanActivate()

@@ -1,5 +1,4 @@
-
-using System.Collections;
+using UI;
 using UnityEngine;
 using Utilities;
 
@@ -12,9 +11,12 @@ namespace Ability
         [SerializeField] private AudioClip cluckSound;
         [SerializeField] private float minDelay;
         [SerializeField] private float maxDelay;
-        [SerializeField,Min(0)] private int minClucks;
-        [SerializeField,Min(0)] private int maxClucks;
 
+        private AudioSource _source;
+        private void Awake()
+        {
+            _source = GetComponent<AudioSource>();
+        }
 
         public override int AbilityNum()
         {
@@ -23,20 +25,10 @@ namespace Ability
 
         protected override void Activate()
         {
-            //We need to synchronize our sounds, let's start a coroutine timer
-            StartCoroutine(Clucker());
-        }
-
-        private IEnumerator Clucker()
-        {
-            
-            int numClucks = Random.Range(minClucks, maxClucks);
-            while (numClucks-- >= 0)
-            {
-                cluckParticle.Play();
-                AudioManager.Instance.PlaySound(cluckSound, transform.position, 1, 20);
-                yield return new WaitForSeconds(Random.Range(minDelay, maxDelay));
-            }
+            cluckParticle.Play();
+            _source.pitch = Random.Range(0.8f, 1.2f);
+            _source.PlayOneShot(cluckSound, SettingsManager.currentSettings.SoundVolume * 1);
+            AudioManager.onSoundPlayed.Invoke(transform.position, 1, 20);
         }
     }
 }

@@ -19,6 +19,8 @@ namespace UI
         [SerializeField] private TextMeshProUGUI uISliderText;
     
         [SerializeField] private TMP_Dropdown graphics;
+        [SerializeField] private AudioClip openNoise;
+        [SerializeField] private AudioClip closeNoise;
     
     
         private static Settings _settings;
@@ -28,10 +30,8 @@ namespace UI
         public static void OpenSettings(bool inMainMenu)
         {       
             _settings._inMainMenu = inMainMenu;
-
             _settings.gameObject.SetActive(true);
-            
-
+            GameManager.PlayUISound(_settings.openNoise);
         }
 
  
@@ -145,6 +145,12 @@ namespace UI
                 PlayerControls.DisableUI();
             }
             _inMainMenu = false;
+        }
+
+        public static void CloseSettings()
+        {
+            _settings.gameObject.SetActive(false);
+            GameManager.PlayUISound(_settings.closeNoise);
         }
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f95005b086388647a9ea09a34836131, type: 3}
+  m_Name: ChickenStats
+  m_EditorClassIdentifier: 
+  speed: 6
+  maxSpeed: 2
+  footRadius: 0.1
+  footDistance: 0.2
+  bounceSfx: {fileID: 8300000, guid: e555aba5081197149806e60795daee1d, type: 3}
+  bushSfx: {fileID: 8300000, guid: f72fadd6af0eefc4b8ad6f66d5f5d918, type: 3}
+  waterSfx: {fileID: 0}
+  onCapture: {fileID: 8300000, guid: f9e813b2a26265947bcfd7f31522f7d5, type: 3}
+  onEscape: {fileID: 8300000, guid: 22156912b6088344b803bf33ba2c6174, type: 3}

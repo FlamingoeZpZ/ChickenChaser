@@ -2784,6 +2784,9 @@ MonoBehaviour:
   abilityButton: {fileID: 1623225072}
   abilityFillBar: {fileID: 63798231}
   abilityIcon: {fileID: 1932528439}
+  cluckButton: {fileID: 1328548376}
+  cluckFillBar: {fileID: 1320867630}
+  cluckIcon: {fileID: 1496687507}
   stick: {fileID: 1997388572}
   lookSpeed: 40
   stickEnabled: 0

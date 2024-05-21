@@ -28,6 +28,6 @@ MonoBehaviour:
   heys:
   - {fileID: 8300000, guid: 761464fb3d7bf1647ba8b1cb0cdabf9b, type: 3}
   - {fileID: 8300000, guid: d0df79c337a19b94dab1ef91ed8c2a5c, type: 3}
-  huhLoudness: 1
+  huhLoudness: 2
   heyLoudness: 2
   timeNeededToTalk: 1

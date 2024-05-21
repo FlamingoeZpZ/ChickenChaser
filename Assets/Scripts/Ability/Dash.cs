@@ -58,7 +58,6 @@ namespace Ability
             //If it was negative, or 0 just go forward. else, set the target D
             if(d > 0) direction.y = d; 
             
-            Debug.Log($"Dashing in direction: {direction}, {yMax} - {origin.y}");
             direction = direction.normalized;
             
             feathers.transform.forward = -direction; // Face the opposite direction of ourselves.
