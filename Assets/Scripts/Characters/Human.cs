@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using AI;
 using Interfaces;
@@ -5,6 +6,7 @@ using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.AI;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Characters
 {
@@ -28,15 +30,22 @@ namespace Characters
         private EHumanState _myState;
         private bool _isDetectionDecaying;
         private float _detectionModifier;
+        private float _previousSuggestedDelay;
+        private Vector3 suggestedForward;
+
 
         private static readonly WaitForSeconds TimerDelay = new WaitForSeconds(0.016f);
         
         private Animator _animator;
         private PathHandler _pathHandler;
         private NavMeshAgent _agent;
+        private AudioSource _source;
 
         private Coroutine _decayTimer;
         private Coroutine _currentRoutine;
+        
+        
+        
 
         private void Awake()
         {
@@ -44,7 +53,14 @@ namespace Characters
             _animator = GetComponentInChildren<Animator>();
             _pathHandler = GetComponent<PathHandler>();
             _agent = GetComponent<NavMeshAgent>();
-            
+            _source = GetComponentInChildren<AudioSource>();
+
+        }
+
+        //Keep these in start as they are asking other scripts and objects to do things.
+        //And we want to give them time to awaken as well.
+        private void Start()
+        {
             _myState = EHumanState.Pathing;
             _agent.speed = stats.BaseMoveSpeed;
             
@@ -54,7 +70,7 @@ namespace Characters
             _currentRoutine = StartCoroutine(Pathing());
             _detectionModifier = stats.IdleStateDetectionModifier;
         }
-        
+
         //This could be optimized via batching, if you're comfortable teaching that.
         private void Update()
         {
@@ -64,14 +80,32 @@ namespace Characters
             {
                 RemoveDetection(stats.DetectionDecayRate * Time.deltaTime);
             }
+
+            if (_myState is EHumanState.Idle or EHumanState.Looking) FaceTarget();
+
+
+        }
+        
+        void FaceTarget()
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(suggestedForward.x, 0, suggestedForward.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * stats.BaseMoveSpeed);
         }
         
         #region AILogic
+        
         private IEnumerator Idle()
         {
             print("Entering Idle");
             _myState = EHumanState.Idle;
-            yield return new WaitForSeconds(Random.Range(stats.MinIdleTime, stats.MaxIdleTime));
+            if (_previousSuggestedDelay != 0)
+            {
+                suggestedForward = _pathHandler.GetSuggestedForward();
+                yield return new WaitForSeconds(Random.Range(stats.MinIdleTime + _previousSuggestedDelay,
+                    stats.MaxIdleTime + _previousSuggestedDelay));
+
+            }
+
             _currentRoutine = StartCoroutine(Pathing());
         }
 
@@ -87,12 +121,11 @@ namespace Characters
             yield return new WaitWhile(() => _agent.pathPending);
             
             // While we have not reached our destination
-            while(!_pathHandler.HasReachedDestination())
+            while(!_pathHandler.HasReachedDestination(out _previousSuggestedDelay))
             {
                 //Optimize by caching in start
                 yield return TimerDelay;
             }
-            
             _currentRoutine = StartCoroutine(Idle());
         }
 
@@ -100,16 +133,17 @@ namespace Characters
         {
             print("Entering Looking");
             _myState = EHumanState.Looking;
-            //When entering look state, we need to rotate to face the given location
+            
+            _source.PlayOneShot(stats.GetRandomHuh(), SettingsManager.currentSettings.SoundVolume * stats.HuhLoudness);
+            AudioManager.onSoundPlayed.Invoke(transform.position, stats.HuhLoudness, stats.HuhLoudness * 5);
             
             //and we need to start playing the look animation
             _animator.SetBool(StaticUtilities.IsSearchingAnimID, true);
             
             //Let's also modify our spotting multiplier 
             _detectionModifier = stats.LookingStateDetectionModifier;
-            
-            //Let's move towards the target, but not too close...
-            _agent.SetDestination(Vector3.Lerp(transform.position, target, 0.1f));
+
+            suggestedForward = target - transform.position;
             
             while(_currentDetection > 0f)
             {
@@ -130,6 +164,8 @@ namespace Characters
         private void Chasing(Vector3 target)
         {
             print("Entering Chase");
+            _source.PlayOneShot(stats.GetRandomHey(), SettingsManager.currentSettings.SoundVolume * stats.HeyLoudness);
+            AudioManager.onSoundPlayed.Invoke(transform.position, stats.HeyLoudness, stats.HeyLoudness * 10);
             _myState = EHumanState.Chasing;
             
             //Disable the animation if it's still playing

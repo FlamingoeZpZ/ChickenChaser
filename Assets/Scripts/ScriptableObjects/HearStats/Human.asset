@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16d50deedf031714cb3249fb656fd76f, type: 3}
   m_Name: Human
   m_EditorClassIdentifier: 
-  audioRange: 15
+  audioRange: 20
   audioDetectionValue: 3
   audioDetectionDropOff:
     serializedVersion: 2

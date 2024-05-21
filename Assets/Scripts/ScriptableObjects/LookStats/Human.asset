@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Human
   m_EditorClassIdentifier: 
   visionFOV: 0.5
-  visionDistance: 10
+  visionDistance: 15
   sightDetectionValue: 1
   sightDetectionDropOff:
     serializedVersion: 2

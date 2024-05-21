@@ -15,7 +15,22 @@ namespace ScriptableObjects
     [SerializeField, Min(0)] private float idleStateDetectionModifier = 1;
     [SerializeField, Min(0)] private float baseMoveSpeed = 2.5f;
     [SerializeField, Min(0)] private float chaseMoveSpeed = 4;
+    [SerializeField, Min(0)] private float minIdleTime = 1;
+    [SerializeField, Min(0)] private float maxIdleTime = 3;
     [SerializeField] private EDetectionType ignoreWhileChasing;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip[] huhs;
+    [SerializeField] private AudioClip[] heys;
+    [SerializeField] private float huhLoudness;
+    [SerializeField] private float heyLoudness;
+
+    public AudioClip GetRandomHuh() => huhs[Random.Range(0, huhs.Length)];
+    public AudioClip GetRandomHey() => heys[Random.Range(0, heys.Length)];
+
+    public float HuhLoudness => huhLoudness;
+    public float HeyLoudness => heyLoudness;
+
   
     public float MaxDetection => maxDetection;
     public float DetectionDecayRate => detectionDecayRate;
@@ -28,8 +43,7 @@ namespace ScriptableObjects
     public EDetectionType IgnoreWhileChasing => ignoreWhileChasing;
     
   
-    [SerializeField, Min(0)] private float minIdleTime = 1;
-    [SerializeField, Min(0)] private float maxIdleTime = 3;
+
   
     public float MinIdleTime => minIdleTime;
     public float MaxIdleTime => maxIdleTime;

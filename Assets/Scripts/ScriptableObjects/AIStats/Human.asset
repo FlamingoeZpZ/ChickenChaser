@@ -19,6 +19,14 @@ MonoBehaviour:
   idleStateDetectionModifier: 1
   baseMoveSpeed: 2
   chaseMoveSpeed: 4
-  ignoreWhileChasing: 2
   minIdleTime: 1
   maxIdleTime: 3
+  ignoreWhileChasing: 2
+  huhs:
+  - {fileID: 8300000, guid: 761464fb3d7bf1647ba8b1cb0cdabf9b, type: 3}
+  - {fileID: 8300000, guid: d0df79c337a19b94dab1ef91ed8c2a5c, type: 3}
+  heys:
+  - {fileID: 8300000, guid: 71e9e08a514155b4683630d99cf3bd51, type: 3}
+  - {fileID: 8300000, guid: f81ed6c268049084882620e3e544967a, type: 3}
+  huhLoudness: 0.5
+  heyLoudness: 4
