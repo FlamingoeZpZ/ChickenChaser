@@ -225,8 +225,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3199869485871651065}
-  - component: {fileID: 6000347570141032123}
   - component: {fileID: 785069991315708746}
+  - component: {fileID: 2422084093704212099}
   - component: {fileID: 1957206060956288738}
   m_Layer: 3
   m_Name: Player
@@ -257,32 +257,6 @@ Transform:
   - {fileID: 6234319113430512110}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6000347570141032123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5662061587206153138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1489cd16fe648f149a2a8f3a58986fdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 11
-  maxSpeed: 2
-  pitchLimit: 30
-  yawLimit: 180
-  yawSpeed: 5
-  pitchSpeed: 5
-  head: {fileID: 2734304907029226763}
-  footTransform: {fileID: 821473674308985966}
-  footRadius: 0.1
-  footDistance: 0.13
-  landEffect: {fileID: 3095555676156603147}
-  bounceSfx: {fileID: 8300000, guid: e555aba5081197149806e60795daee1d, type: 3}
-  bushNoise: {fileID: 8300000, guid: f72fadd6af0eefc4b8ad6f66d5f5d918, type: 3}
-  caughtCam: {fileID: 3576921349209581253}
 --- !u!114 &785069991315708746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,6 +274,34 @@ MonoBehaviour:
   dashDistance: 3
   dashDuration: 0.2
   feathers: {fileID: 6544793656298120032}
+--- !u!114 &2422084093704212099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662061587206153138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a65e5e48a7562b54792e86b70266be2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 11
+  maxSpeed: 2
+  head: {fileID: 2734304907029226763}
+  footTransform: {fileID: 821473674308985966}
+  footRadius: 0.1
+  footDistance: 0.13
+  landEffect: {fileID: 3095555676156603147}
+  bounceSfx: {fileID: 8300000, guid: e555aba5081197149806e60795daee1d, type: 3}
+  bushNoise: {fileID: 8300000, guid: f72fadd6af0eefc4b8ad6f66d5f5d918, type: 3}
+  abilityBaseController: {fileID: 785069991315708746}
+  cluckAbility: {fileID: 0}
+  pitchLimit: 30
+  yawLimit: 180
+  yawSpeed: 1
+  pitchSpeed: 1
+  caughtCam: {fileID: 3576921349209581253}
 --- !u!54 &1957206060956288738
 Rigidbody:
   m_ObjectHideFlags: 0

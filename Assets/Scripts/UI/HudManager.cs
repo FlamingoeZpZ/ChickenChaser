@@ -1,4 +1,5 @@
 
+using System;
 using Characters;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ public class HudManager : MonoBehaviour
     [SerializeField] private Joystick stick;
 
     private Chicken _owner;
-
+    private Canvas _canvas;
     private void Awake()
     {
         if(Instance && Instance != this)
@@ -22,12 +23,34 @@ public class HudManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        _canvas = GetComponent<Canvas>();
         Instance = this;
         
         #if !UNITY_STANDALONE || UNITY_EDITOR
         stick.gameObject.SetActive(true);
         #endif
         
+    }
+
+    private void Start()
+    {
+        OnUIScaleChanged(SettingsManager.currentSettings.UIScale);
+    }
+
+    private void OnEnable()
+    {
+        SettingsManager.SaveFile.onUIScaleChanged += OnUIScaleChanged;
+    }
+
+    private void OnDisable()
+    {
+        SettingsManager.SaveFile.onUIScaleChanged -= OnUIScaleChanged;
+    }
+    
+    private void OnUIScaleChanged(float obj)
+    {
+        _canvas.scaleFactor = obj;// * 100;
     }
 
     public void BindPlayer(Chicken player)

@@ -22,15 +22,25 @@ public static class ReverseAnimationContext
         if (clip == null)
             return;
         float clipLength = clip.length;
-        var curves = AnimationUtility.GetAllCurves(clip, true);
+        
+        EditorCurveBinding[] curveBindings = AnimationUtility.GetCurveBindings(clip);
+        AnimationClipCurveData[] allCurves = new AnimationClipCurveData[curveBindings.Length];
+        
+        for (int index = 0; index < allCurves.Length; ++index)
+        {
+            allCurves[index] = new AnimationClipCurveData(curveBindings[index])
+            {
+                curve = AnimationUtility.GetEditorCurve(clip, curveBindings[index])
+            };
+        }
+        
         clip.ClearCurves();
-        foreach (AnimationClipCurveData curve in curves)
+        
+        foreach (AnimationClipCurveData curve in allCurves)
         {
             var keys = curve.curve.keys;
             int keyCount = keys.Length;
-            var postWrapmode = curve.curve.postWrapMode;
-            curve.curve.postWrapMode = curve.curve.preWrapMode;
-            curve.curve.preWrapMode = postWrapmode;
+            (curve.curve.postWrapMode, curve.curve.preWrapMode) = (curve.curve.preWrapMode, curve.curve.postWrapMode);
             for (int i = 0; i < keyCount; i++)
             {
                 Keyframe K = keys[i];
@@ -46,10 +56,11 @@ public static class ReverseAnimationContext
         var events = AnimationUtility.GetAnimationEvents(clip);
         if (events.Length > 0)
         {
-            for (int i = 0; i < events.Length; i++)
+            foreach (var t in events)
             {
-                events[i].time = clipLength - events[i].time;
+                t.time = clipLength - t.time;
             }
+
             AnimationUtility.SetAnimationEvents(clip, events);
         }
         Debug.Log("Animation reversed!");
@@ -58,7 +69,7 @@ public static class ReverseAnimationContext
     [MenuItem("Assets/Create Reversed Clip", true)]
     static bool ReverseClipValidation()
     {
-        return Selection.activeObject.GetType() == typeof(AnimationClip);
+        return Selection.activeObject is AnimationClip;
     }
  
     public static AnimationClip GetSelectedClip()

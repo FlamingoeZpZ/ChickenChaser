@@ -26,9 +26,9 @@ namespace Managers
         {
             _controls.Game.Disable();
             _controls.UI.Enable();
-
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = false;
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public static void DisableUI()

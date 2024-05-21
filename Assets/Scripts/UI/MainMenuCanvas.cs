@@ -1,18 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Managers;
 using UnityEngine;
 
-public class MainMenuCanvas : MonoBehaviour
+namespace UI
 {
-    // Start is called before the first frame update
-    void Start()
+    public class MainMenuCanvas : MonoBehaviour
     {
+        private static MainMenuCanvas _menuCanvas;
         
-    }
+        private void OnEnable()
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+            
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void Start()
+        {
+            _menuCanvas = this;
+        }
+
+        public void OpenSettings()
+        {
+            Settings.OpenSettings(true);
+        }
+
+        public void OpenRP4K()
+        {
+            Application.OpenURL("https://realprogramming.com/");
+        }
+
+        public void BeginGame()
+        {
+            GameManager.LoadGame();
+        }
+
+        public static void SetActive(bool b)
+        {
+            _menuCanvas.gameObject.SetActive(b);
+        }
+
+        public void PlaySound(AudioClip hoverSound)
+        {
+            GameManager.PlayUISound(hoverSound);
+        }
     }
 }
