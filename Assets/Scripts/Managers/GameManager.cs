@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities;
 
@@ -30,6 +32,12 @@ namespace Managers
         [SerializeField] private AudioClip stealthMusic;
         [SerializeField] private AudioClip chaseMusic;
         [SerializeField] private AudioClip mainMusic;
+
+        [SerializeField] private AudioVolumeRangeSet[] audioSets;
+
+        public static readonly Dictionary<string, AudioVolumeRangeSet> SoundsDictionary =
+            new Dictionary<string, AudioVolumeRangeSet>();
+        
         private GameObject _textBlocks;
         private Material _transition;
         
@@ -58,6 +66,12 @@ namespace Managers
             {
                 source.volume = x;
             };
+
+            SoundsDictionary.Clear();
+            foreach (var set in audioSets)
+            {
+                SoundsDictionary.Add(set.tag, set);
+            }
         }
 
         public static void PlayUISound(AudioClip clip)
@@ -168,7 +182,19 @@ namespace Managers
 
             _transition.SetFloat(StaticUtilities.FillMatID, curve.Evaluate(1));
         }
-
-
+        
+       
+        
     }
+
+    [Serializable]
+    public struct AudioVolumeRangeSet
+    {
+        public AudioClip clip;
+        [Range(0,1)]public float volume;
+        [Min(0)]public float rangeMultiplier;
+        public string tag; // Alternative (which would be for the best) is to make a custom editor... and That's not happenening, atleast not right now.
+    }
+    
+
 }

@@ -86,17 +86,15 @@ namespace Characters
         
         public void ChangeAbilityState(bool state)
         {
-            if(state) cluckAbility.StartAbility();
-            else cluckAbility.StopAbility();
-            Animator.SetTrigger(abilityBaseController.AbilityNum());
+            if(state) abilityBaseController.StartAbility();
+            else abilityBaseController.StopAbility();
         }
 
 
         public void ChangeCluckState(bool state)
         {
-            if(state) cluckAbility.StartAbility();
+            if (state) cluckAbility.StartAbility();
             else cluckAbility.StopAbility();
-            Animator.SetTrigger(cluckAbility.AbilityNum());
         }
 
     

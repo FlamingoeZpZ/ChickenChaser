@@ -291,7 +291,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5662061587206153138}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86e615a5a14290a48a8ad199475bdb07, type: 3}
   m_Name: 
@@ -300,8 +300,6 @@ MonoBehaviour:
   head: {fileID: 2734304907029226763}
   footTransform: {fileID: 821473674308985966}
   landEffect: {fileID: 3095555676156603147}
-  abilityBaseController: {fileID: 0}
-  cluckAbility: {fileID: 0}
 --- !u!195 &1449428557594908429
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -310,7 +308,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5662061587206153138}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
@@ -717,30 +715,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4317008982676661672, guid: 70c862bc985975547b6e20d5e1c01aea,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1226929285514782682}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70c862bc985975547b6e20d5e1c01aea, type: 3}
---- !u!1 &1362392486252781677 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4317008982676661672, guid: 70c862bc985975547b6e20d5e1c01aea,
-    type: 3}
-  m_PrefabInstance: {fileID: 2954687306585261509}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1226929285514782682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362392486252781677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d563bd97f83c37b48a48141b4a376336, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &3573602149054614908 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1771836925857482937, guid: 70c862bc985975547b6e20d5e1c01aea,

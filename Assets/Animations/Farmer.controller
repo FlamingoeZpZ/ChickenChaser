@@ -361,8 +361,8 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: isSearching
+  - m_ConditionMode: 3
+    m_ConditionEvent: moveSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2512500835548285776}
@@ -389,6 +389,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: isSearching
     m_EventTreshold: 0
+  - m_ConditionMode: 4
+    m_ConditionEvent: moveSpeed
+    m_EventTreshold: 0.2
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 4663068530905462090}
   m_Solo: 0

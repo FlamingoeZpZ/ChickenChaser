@@ -1,3 +1,4 @@
+using System;
 using Interfaces;
 using ScriptableObjects;
 using UnityEngine;
@@ -11,6 +12,10 @@ namespace AI
         [SerializeField] private Transform head;
         [SerializeField] private HearStats stats;
         private IDetector _detector;
+        
+        public static Action<Vector3, float, float, EAudioLayer> onSoundPlayed;
+
+        
         private void Awake()
         {
             _detector = GetComponent<IDetector>();
@@ -20,17 +25,19 @@ namespace AI
         private void OnEnable()
         {
             //Subscribe when enabled
-            AudioManager.onSoundPlayed += CheckListen;
+            onSoundPlayed += CheckListen;
         }
 
         private void OnDisable()
         {
             //Unsub when disabled
-            AudioManager.onSoundPlayed -= CheckListen;
+            onSoundPlayed -= CheckListen;
         }
 
-        private void CheckListen(Vector3 location, float volume, float range)
+        private void CheckListen(Vector3 location, float volume, float range, EAudioLayer layer)
         {
+            if (!stats.CanHearSound(layer)) return;
+            
             //Get the distance between us and the location
             float distance = Vector3.Distance(head.position, location);
 

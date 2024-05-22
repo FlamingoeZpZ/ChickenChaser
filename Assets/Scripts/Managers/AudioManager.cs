@@ -1,29 +1,10 @@
 using System;
+using ScriptableObjects;
 using UnityEngine;
 
-
-public class AudioManager : MonoBehaviour
+namespace Managers
 {
-    public static Action<Vector3, float, float> onSoundPlayed;
-
-    public static AudioManager Instance { get; private set; }
-
-    private void Awake()
+    public class AudioManager : MonoBehaviour
     {
-        if (Instance && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
     }
-
-    public void PlaySound(AudioClip sound, Vector3 location, float volume, float range)
-    {
-        //Volume must be between 0-1
-        onSoundPlayed?.Invoke(location, volume, range);   
-        AudioSource.PlayClipAtPoint(sound, location, volume);
-    }
-
 }

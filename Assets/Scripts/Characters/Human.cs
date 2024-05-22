@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using AI;
 using Interfaces;
+using Managers;
 using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.AI;
@@ -93,6 +94,7 @@ namespace Characters
             Quaternion lookRotation = Quaternion.LookRotation(new Vector3(suggestedForward.x, 0, suggestedForward.z));
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * stats.BaseMoveSpeed);
         }
+
         
         #region AILogic
         
@@ -135,7 +137,7 @@ namespace Characters
         {
             print("Entering Looking: " + Time.timeSinceLevelLoad + ", " + timeSinceLastSpoken);
             _myState = EHumanState.Looking;
-
+            _agent.speed = stats.ChaseMoveSpeed;
             float nt = Time.timeSinceLevelLoad;
             if (nt - stats.TimeNeededToTalk >= timeSinceLastSpoken)
             {
@@ -167,6 +169,7 @@ namespace Characters
             //Go back to track...
             if(_currentRoutine != null) StopCoroutine(_currentRoutine);
             _currentRoutine = StartCoroutine(Pathing());
+            _agent.speed = stats.BaseMoveSpeed;
 
         }
         
@@ -178,7 +181,7 @@ namespace Characters
             _myState = EHumanState.Chasing;
             
             _source.PlayOneShot(stats.GetRandomHey(), SettingsManager.currentSettings.SoundVolume * stats.HeyLoudness);
-            AudioManager.onSoundPlayed.Invoke(transform.position, stats.HeyLoudness, stats.HeyLoudness * 10);
+            AudioDetection.onSoundPlayed.Invoke(transform.position, stats.HeyLoudness, stats.HeyLoudness * 10, EAudioLayer.Human);
             
             
             //Disable the animation if it's still playing
@@ -188,7 +191,7 @@ namespace Characters
             _agent.destination = target;
             
             //We also want to begin running, and therefore change the speed to run speed
-            _agent.speed = stats.ChaseMoveSpeed;
+           
             
             //While we are chasing, if the player gets to close to us, then they lose.
             
@@ -255,7 +258,7 @@ namespace Characters
             {
                 StopCoroutine(_currentRoutine);
                 _currentRoutine = StartCoroutine(Looking(_agent.destination));
-                _agent.speed = stats.BaseMoveSpeed;
+               
             }
             
 

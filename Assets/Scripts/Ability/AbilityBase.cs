@@ -10,13 +10,21 @@ namespace Ability
         [SerializeField] private float cooldown;
         [SerializeField] private bool canBeHeld;
         
+        
+        private bool TriggerAnimator() => AbilityTriggerID()!=0;
+        private bool BoolAnimator() => AbilityBoolID()!=0;
+        
+        protected virtual int AbilityBoolID() => 0;
+        protected virtual int AbilityTriggerID() => 0;
+
+
+
         protected Chicken Owner;
+        protected Animator Animator;
         private bool _isReady = true;
         private bool _isBeingHeld;
         private float _currentCooldownTime;
         private Action<float> _onAbilityUpdated;
-        
-
         public Sprite Icon => icon;
 
         public void BindAbilityUpdated(Action<float> action)
@@ -29,6 +37,9 @@ namespace Ability
             do
             {
                 yield return new WaitUntil(CanActivate);
+                if(!_isBeingHeld) yield break; // We should actually just quit if the user let go.
+                Activate();
+                if(TriggerAnimator()) Animator.SetTrigger(AbilityTriggerID());
                 _currentCooldownTime = 0;
                 _isReady = false;
                 while (_currentCooldownTime < cooldown)
@@ -41,31 +52,35 @@ namespace Ability
                 //Make sure that it's running!
                 _onAbilityUpdated?.Invoke(1);
                 _isReady = true;
-                Activate();
+                
             } while (_isBeingHeld && canBeHeld);
+
+            StopAbility();
         }
 
         //Start because we want to use Awake in the others. Can also do virtual override optional
         private void Start()
         {
             Owner = GetComponentInParent<Chicken>();
+            Animator = GetComponentInChildren<Animator>();
+         
         }
 
         public void StartAbility()
         {
             _isBeingHeld = true;
             StartCoroutine(BeginCooldown());
-            
-
+            if(BoolAnimator()) Animator.SetBool(AbilityBoolID(), true);
         }
 
         public void StopAbility()
         {
             _isBeingHeld = false;
+            if(BoolAnimator()) Animator.SetBool(AbilityBoolID() ,false);
         }
 
 
-        public abstract int AbilityNum();
+
 
         protected virtual bool CanActivate()
         {

@@ -1,4 +1,6 @@
+using AI;
 using Interfaces;
+using Managers;
 using ScriptableObjects;
 using UnityEngine;
 using Utilities;
@@ -9,7 +11,7 @@ namespace Characters
     public class Chicken : MonoBehaviour, IVisualDetectable
     {
 
-        [SerializeField] private ChickenStats stats;
+        [SerializeField] protected ChickenStats stats;
         
         [Header("Looking")] 
         [SerializeField] protected Transform head;
@@ -19,17 +21,18 @@ namespace Characters
 
         [Header("Effects")]
         [SerializeField] private ParticleSystem landEffect;
-        
 
 
+        private float _moveSpeed;
         public bool IsGrounded { get; private set; }
         public Vector3 HeadForward => head.forward;
+        public float MoveSpeed => _moveSpeed;
 
         protected Vector3 MoveDirection;
         protected Vector2 LookDirection;
         protected Rigidbody Rb;
         protected Animator Animator;
-
+        protected AudioSource audioSource;
 
         
         private float _visibility = 1;
@@ -43,11 +46,11 @@ namespace Characters
         protected virtual void Awake()
         {
             //_myTransform = transform;
-            
-            
+
+            audioSource = GetComponentInChildren<AudioSource>();
             Rb = GetComponent<Rigidbody>();
             Animator = GetComponentInChildren<Animator>();
-            ChickenAnimatorReciever car = transform.GetChild(0).GetComponent<ChickenAnimatorReciever>();
+            ChickenAnimatorReceiver car = transform.GetChild(0).GetComponent<ChickenAnimatorReceiver>();
             car.OnLandEffect += LandEffect;
             
             Rb.maxLinearVelocity = stats.MaxSpeed;
@@ -65,7 +68,7 @@ namespace Characters
             //We're going to spherecast downwards, and detect if we've hit the floor.
             //Basic Spherecast check
             bool newGroundedState = Physics.SphereCast(footTransform.position, stats.FootRadius, Vector3.down, out RaycastHit _, stats.FootDistance,
-                StaticUtilities.WallLayer);
+                StaticUtilities.GroundLayers);
             if (newGroundedState != IsGrounded)
             {
                 IsGrounded = newGroundedState;
@@ -85,7 +88,10 @@ namespace Characters
         private void HandleMovement()
         {
             Rb.AddForce(transform.rotation * MoveDirection * stats.Speed);
-            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, Rb.velocity.magnitude);
+
+            _moveSpeed = Rb.velocity.magnitude;
+            
+            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, _moveSpeed);
         }
 
 
@@ -110,12 +116,19 @@ namespace Characters
         {
             landEffect.emission.SetBurst(0, new ParticleSystem.Burst(0, Random.Range(10,20) * force));
             landEffect.Play();
-            AudioManager.Instance.PlaySound(stats.BounceSfx, transform.position, 0.25f, 5 * force);
             
-            //If in bush
-            if(Physics.CheckSphere(transform.position, stats.FootRadius, StaticUtilities.BushLayer))
-                AudioManager.Instance.PlaySound(stats.BushSfx, transform.position, 0.25f, 15 * force);
+            //If we missed, we can't possibly find a clip...
+            Vector3 pos = transform.position;
             
+            //Make sure hit is not null
+            if (!Physics.SphereCast(pos, stats.FootRadius, Vector3.down, out RaycastHit hit, stats.FootDistance,StaticUtilities.GroundLayers)) return;
+            
+            //Make sure the layer is not null
+            if (!GameManager.SoundsDictionary.TryGetValue(hit.transform.tag, out AudioVolumeRangeSet set)) return;
+            audioSource.pitch = Random.Range(0.8f, 1.2f);
+            //Play the desired audio + detection
+            audioSource.PlayOneShot(set.clip, set.volume);
+            AudioDetection.onSoundPlayed.Invoke(pos, set.volume, set.rangeMultiplier * force, EAudioLayer.Chicken);
         }
 
         public void AddVisibility(float vis)

@@ -15,10 +15,7 @@ namespace Ability
             rb = GetComponent<Rigidbody>();
         }
 
-        public override int AbilityNum()
-        {
-            return StaticUtilities.JumpAnimID;
-        }
+        protected override int AbilityTriggerID() => StaticUtilities.JumpAnimID;
 
         protected override bool CanActivate()
         {

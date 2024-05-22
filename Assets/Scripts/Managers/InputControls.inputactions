@@ -293,6 +293,17 @@
                     "action": "Cluck",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eb9eec0a-fa49-42d2-8275-63627280bb87",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cluck",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

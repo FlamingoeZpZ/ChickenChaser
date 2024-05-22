@@ -702,89 +702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &78874200
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 26.849346
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.962
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 11.514144
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071067
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.10808952
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.21699965
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.026487652
-      objectReference: {fileID: 0}
-    - target: {fileID: 7381780579062158055, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_Name
-      value: Trapped Chicken (3)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 170d8731b9a63c64d853e087d4707f06, type: 3}
 --- !u!1 &85975659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2715,6 +2632,19 @@ MonoBehaviour:
   stealthMusic: {fileID: 8300000, guid: 0048929ecdaed9d47b55c3674102a5f2, type: 3}
   chaseMusic: {fileID: 8300000, guid: fa1ae2628ecbfc84aa9d3be8defcb2de, type: 3}
   mainMusic: {fileID: 8300000, guid: f5c9c8e26c6e4ad459b0997501f0ae89, type: 3}
+  audioSets:
+  - clip: {fileID: 8300000, guid: e555aba5081197149806e60795daee1d, type: 3}
+    volume: 1
+    rangeMultiplier: 5
+    tag: Grass
+  - clip: {fileID: 8300000, guid: f72fadd6af0eefc4b8ad6f66d5f5d918, type: 3}
+    volume: 1
+    rangeMultiplier: 15
+    tag: Bush
+  - clip: {fileID: 8300000, guid: 34a230366cc4bf649b942db154568e6c, type: 3}
+    volume: 0.75
+    rangeMultiplier: 15
+    tag: Water
 --- !u!4 &358149971
 Transform:
   m_ObjectHideFlags: 0
@@ -3809,89 +3739,6 @@ MonoBehaviour:
   graphics: {fileID: 1785267370}
   openNoise: {fileID: 8300000, guid: 217f6c2baf0161342a7bc13cddc5769f, type: 3}
   closeNoise: {fileID: 8300000, guid: 217f6c2baf0161342a7bc13cddc5769f, type: 3}
---- !u!1001 &441710510
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -2.6308508
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.267
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 16.125708
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071067
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.108089045
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.2169994
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.026488606
-      objectReference: {fileID: 0}
-    - target: {fileID: 7381780579062158055, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_Name
-      value: Trapped Chicken (4)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 170d8731b9a63c64d853e087d4707f06, type: 3}
 --- !u!1001 &466521063
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6308,12 +6155,12 @@ GameObject:
   m_Component:
   - component: {fileID: 692887160}
   - component: {fileID: 692887161}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SafeZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &692887160
 Transform:
@@ -11025,90 +10872,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1639688026}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1281033951
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 18.493614
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.889
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -11.331
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071067
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 494980695905064265, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.10808952
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.21699965
-      objectReference: {fileID: 0}
-    - target: {fileID: 2465635241582390710, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.026487652
-      objectReference: {fileID: 0}
-    - target: {fileID: 7381780579062158055, guid: 170d8731b9a63c64d853e087d4707f06,
-        type: 3}
-      propertyPath: m_Name
-      value: Trapped Chicken (2)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 6423985773883686746, guid: 170d8731b9a63c64d853e087d4707f06, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 170d8731b9a63c64d853e087d4707f06, type: 3}
 --- !u!1001 &1293478609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11369,12 +11132,12 @@ PrefabInstance:
     - target: {fileID: 9003533974184775799, guid: df1e59a0cc931864f8dabab8f20499b5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5119765
+      value: 1.398
       objectReference: {fileID: 0}
     - target: {fileID: 9003533974184775799, guid: df1e59a0cc931864f8dabab8f20499b5,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.12844753
+      value: -0.208
       objectReference: {fileID: 0}
     - target: {fileID: 9003533974184775799, guid: df1e59a0cc931864f8dabab8f20499b5,
         type: 3}
@@ -11435,7 +11198,7 @@ GameObject:
   - component: {fileID: 1367866209}
   m_Layer: 0
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -16498,9 +16261,9 @@ GameObject:
   - component: {fileID: 1822492478}
   - component: {fileID: 1822492477}
   - component: {fileID: 1822492476}
-  m_Layer: 8
+  m_Layer: 4
   m_Name: Water
-  m_TagString: Untagged
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -18449,12 +18212,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2068359998}
   - component: {fileID: 2068359999}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SafeZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2068359998
 Transform:
@@ -20854,6 +20617,3 @@ SceneRoots:
   - {fileID: 1406439367}
   - {fileID: 358149971}
   - {fileID: 428627125}
-  - {fileID: 1281033951}
-  - {fileID: 78874200}
-  - {fileID: 441710510}

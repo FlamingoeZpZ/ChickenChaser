@@ -5,7 +5,6 @@ namespace Interfaces
 {
     public interface IDetector
     {
-        public float GetDetection();
         public void AddDetection(Vector3 location,float detection, EDetectionType type);
     }
 

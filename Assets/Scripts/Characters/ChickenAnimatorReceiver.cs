@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Characters
 {
-    public class ChickenAnimatorReciever : MonoBehaviour
+    public class ChickenAnimatorReceiver : MonoBehaviour
     {
 
         public Action<float> OnLandEffect = null;

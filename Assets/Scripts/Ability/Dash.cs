@@ -83,10 +83,6 @@ namespace Ability
             
         }
 
-        public override int AbilityNum()
-        {
-            return StaticUtilities.DashAnimID;
-        }
 
         protected override bool CanActivate()
         {
@@ -108,5 +104,8 @@ namespace Ability
             Gizmos.color = Color.yellow;
             GizmosExtras.DrawWireSphereCast(transform.position, transform.forward, dashDistance, _radius);
         }
+        
+
+        protected override int AbilityTriggerID() => StaticUtilities.DashAnimID;
     }
 }
