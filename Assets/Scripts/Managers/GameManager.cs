@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities;
 
@@ -182,8 +181,13 @@ namespace Managers
 
             _transition.SetFloat(StaticUtilities.FillMatID, curve.Evaluate(1));
         }
-        
-       
+
+
+        public static void TransitionGameMusic(bool isChasing, float duration)
+        {
+            Instance.StartCoroutine(Instance.source.TransitionSound(isChasing?Instance.chaseMusic:Instance.stealthMusic,duration));
+        }
+
         
     }
 

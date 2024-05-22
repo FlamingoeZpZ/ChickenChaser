@@ -13,7 +13,7 @@ namespace Characters
 {
     public class Human : MonoBehaviour, IDetector
     {
-        private enum EHumanState
+        public enum EHumanState
         {
             Idle, // From idle, after X seconds, we begin pathing. If we see the chicken, enter looking state.
             Pathing, // From pathing, we follow the track until we reach our destination. If we reach the destination, enter idle for X seconds. If we see the chicken, enter looking state
@@ -47,7 +47,7 @@ namespace Characters
         private Coroutine _decayTimer;
         private Coroutine _currentRoutine;
         
-        
+        public static Action OnBeginChasing; // Default --> change music
         
 
         private void Awake()
@@ -190,15 +190,7 @@ namespace Characters
             //When in chasing state, we will leave the path, and move towards the given location
             _agent.destination = target;
             
-            //We also want to begin running, and therefore change the speed to run speed
-           
-            
-            //While we are chasing, if the player gets to close to us, then they lose.
-            
-            //While chasing, we do not lose detection until we reach the last known location of the player...
-            
-            //We need to find a path, which is done in a different thread,
-            //so the only way we can actually do this properly every time, is to wait until the thread merges main
+            AIManager.BeginChasing();
 
         }
         #endregion
@@ -258,6 +250,7 @@ namespace Characters
             {
                 StopCoroutine(_currentRoutine);
                 _currentRoutine = StartCoroutine(Looking(_agent.destination));
+                AIManager.StopChasing();
                
             }
             

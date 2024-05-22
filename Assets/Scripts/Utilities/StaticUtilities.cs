@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Utilities
@@ -35,5 +37,39 @@ namespace Utilities
 
 
         public static readonly int FillMatID = Shader.PropertyToID("_Fill");
+        
+        //The "this" keyword will allow us to say source.TransitionSound anywhere.
+        /// <summary>
+        /// This is a coroutine function that transitions audio. It is not async because web support
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="nextClip"></param>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        public static IEnumerator TransitionSound(this AudioSource source, AudioClip nextClip, float duration)
+        {
+            float curTime = 0;
+            float volume = source.volume;
+            bool hasChanged = false;
+            while (curTime < duration)
+            {
+                curTime += Time.deltaTime;
+                float percent = curTime / duration;
+                
+                //Make a parabolic function, in which when percent is 0, currentVolume is volume, and when percent is 0.5, volume is 0, and when percent is currentVolume is volume
+                var currentVolume = 4 * volume * (percent - 0.5f) * (percent - 0.5f);
+
+                if (!hasChanged && percent > 0.5f)
+                {
+                    hasChanged = true;
+                    source.clip = nextClip;
+                    source.Play();
+                }
+                source.volume = currentVolume;
+
+                yield return null;
+            }
+            source.volume = volume;
+        }
     }
 }

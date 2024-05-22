@@ -122,7 +122,7 @@ namespace Characters
             
             //Make sure hit is not null
             if (!Physics.SphereCast(pos, stats.FootRadius, Vector3.down, out RaycastHit hit, stats.FootDistance,StaticUtilities.GroundLayers)) return;
-            
+            print("Chicken landed on :" + hit.transform.name);
             //Make sure the layer is not null
             if (!GameManager.SoundsDictionary.TryGetValue(hit.transform.tag, out AudioVolumeRangeSet set)) return;
             audioSource.pitch = Random.Range(0.8f, 1.2f);

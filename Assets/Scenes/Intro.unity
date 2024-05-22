@@ -4369,6 +4369,7 @@ GameObject:
   - component: {fileID: 1390014902}
   - component: {fileID: 1390014901}
   - component: {fileID: 1390014900}
+  - component: {fileID: 1390014903}
   m_Layer: 6
   m_Name: Farmer
   m_TagString: Untagged
@@ -4440,6 +4441,18 @@ Transform:
   - {fileID: 741446890}
   m_Father: {fileID: 1144093278}
   m_LocalEulerAnglesHint: {x: 0, y: -7.627, z: 0}
+--- !u!114 &1390014903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390014899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5cfe15075f5c34d8dbcbf1c8a2432c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1417015606
 GameObject:
   m_ObjectHideFlags: 0
@@ -9335,6 +9348,7 @@ GameObject:
   - component: {fileID: 6179586185325570434}
   - component: {fileID: 8453136629506512683}
   - component: {fileID: 3541867794087218668}
+  - component: {fileID: 8453136629506512684}
   m_Layer: 6
   m_Name: Farmer
   m_TagString: Untagged
@@ -9722,6 +9736,18 @@ CapsuleCollider:
   m_Height: 1.9880185
   m_Direction: 1
   m_Center: {x: -0.006160915, y: 0.8497534, z: 0.08225599}
+--- !u!114 &8453136629506512684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7394933103373158757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5cfe15075f5c34d8dbcbf1c8a2432c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8472509360470203315
 GameObject:
   m_ObjectHideFlags: 0
