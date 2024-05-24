@@ -2638,12 +2638,12 @@ MonoBehaviour:
     rangeMultiplier: 5
     tag: Grass
   - clip: {fileID: 8300000, guid: f72fadd6af0eefc4b8ad6f66d5f5d918, type: 3}
-    volume: 1
-    rangeMultiplier: 15
+    volume: 0.35
+    rangeMultiplier: 10
     tag: Bush
   - clip: {fileID: 8300000, guid: 34a230366cc4bf649b942db154568e6c, type: 3}
-    volume: 0.75
-    rangeMultiplier: 15
+    volume: 0.3
+    rangeMultiplier: 10
     tag: Water
 --- !u!4 &358149971
 Transform:
@@ -11210,7 +11210,7 @@ TerrainCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1367866208}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 76652ebfd944c444a96f2b92885d374e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -11549,74 +11549,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1399856986}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1406439364
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1406439367}
-  - component: {fileID: 1406439366}
-  - component: {fileID: 1406439365}
-  m_Layer: 0
-  m_Name: Goal
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!114 &1406439365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1406439364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adf3ef8a2d901dd4086477234c894bf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveToLocation: {fileID: 1496743549}
---- !u!65 &1406439366
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1406439364}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.5998802, y: 3.5942087, z: 5.9820757}
-  m_Center: {x: 0.2999401, y: -1.2971046, z: -0.6440573}
---- !u!4 &1406439367
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1406439364}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.7, y: 3.198, z: -1.316}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1496743549}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1418196853
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13249,37 +13181,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1492413682}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1496743548
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1496743549}
-  m_Layer: 0
-  m_Name: Target
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &1496743549
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1496743548}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9, y: -2.41, z: -0.03}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1406439367}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1513419973
 GameObject:
   m_ObjectHideFlags: 0
@@ -16340,7 +16241,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1822492475}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7ad7bd6fe73bcdb46aa790807183cad6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20613,6 +20514,5 @@ SceneRoots:
   - {fileID: 1734082692}
   - {fileID: 479640549}
   - {fileID: 171099821}
-  - {fileID: 1406439367}
   - {fileID: 358149971}
   - {fileID: 428627125}

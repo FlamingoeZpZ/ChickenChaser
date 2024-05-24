@@ -35,6 +35,7 @@ namespace Managers
 
         public static void EnableUI()
         {
+            DisablePlayer();
             _controls.Game.Disable();
             _controls.UI.Enable();
             

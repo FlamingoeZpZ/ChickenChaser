@@ -9,12 +9,10 @@ public class WinEffects : MonoBehaviour
     void OnEnable()
     {
         _cam = GetComponent<CinemachineVirtualCamera>();
-        EndGoal.onGameWon += OnGameWon;
     }
 
     private void OnDisable()
     {
-        EndGoal.onGameWon -= OnGameWon;
     }
 
     private void OnGameWon()

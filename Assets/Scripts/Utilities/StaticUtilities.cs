@@ -14,12 +14,16 @@ namespace Utilities
         
         public static readonly int HumanLayer = 1 << LayerMask.NameToLayer("Human");
         public static readonly int PlayerLayer = 1 << LayerMask.NameToLayer("Player");
+        public static readonly int ChickenAiLayer = 1 << LayerMask.NameToLayer("AiChicken");
         
         //Describes layers for detection
-        public static readonly int EverythingButChicken = ~(PlayerLayer | HumanLayer);
+        public static readonly int EverythingButChicken = ~(PlayerLayer | HumanLayer | ChickenAiLayer);
         
         //Describes the layers we cannot see/pass through
         public static readonly int VisibilityLayer =  WallLayer | HumanLayer;
+        
+        //What layers are we looking for
+        public static readonly int DetectableLayer = PlayerLayer | ChickenAiLayer;
         
         //Describes the layers that will count as grounded if we are in or touching
         public static readonly int GroundLayers = WallLayer | WaterLayer | BushLayer;

@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace Characters
 {
-    public class Chicken : MonoBehaviour, IVisualDetectable
+    public abstract class Chicken : MonoBehaviour, IVisualDetectable
     {
 
         [SerializeField] protected ChickenStats stats;
@@ -23,10 +23,10 @@ namespace Characters
         [SerializeField] private ParticleSystem landEffect;
 
 
-        private float _moveSpeed;
+        protected float moveSpeed;
         public bool IsGrounded { get; private set; }
         public Vector3 HeadForward => head.forward;
-        public float MoveSpeed => _moveSpeed;
+        public float MoveSpeed => moveSpeed;
 
         protected Vector3 MoveDirection;
         protected Vector2 LookDirection;
@@ -85,13 +85,13 @@ namespace Characters
             if (!IsGrounded) _fallTime += Time.deltaTime;
         }
 
-        private void HandleMovement()
+        protected virtual void HandleMovement()
         {
             Rb.AddForce(transform.rotation * MoveDirection * stats.Speed);
 
-            _moveSpeed = Rb.velocity.magnitude;
+            moveSpeed = Rb.velocity.magnitude;
             
-            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, _moveSpeed);
+            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, moveSpeed);
         }
 
 
@@ -118,10 +118,13 @@ namespace Characters
             landEffect.Play();
             
             //If we missed, we can't possibly find a clip...
-            Vector3 pos = transform.position;
+            Vector3 pos = footTransform.position;
             
             //Make sure hit is not null
             if (!Physics.SphereCast(pos, stats.FootRadius, Vector3.down, out RaycastHit hit, stats.FootDistance,StaticUtilities.GroundLayers)) return;
+           
+
+            
             print("Chicken landed on :" + hit.transform.name);
             //Make sure the layer is not null
             if (!GameManager.SoundsDictionary.TryGetValue(hit.transform.tag, out AudioVolumeRangeSet set)) return;
@@ -146,5 +149,10 @@ namespace Characters
         {
             return _visibility;
         }
+
+        public abstract void ReleaseChicken();
+
+        public abstract void EscapeAndMoveTo(Vector3 position);
+        public abstract void CaptureChicken();
     }
 }

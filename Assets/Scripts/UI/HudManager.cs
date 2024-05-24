@@ -9,21 +9,30 @@ namespace UI
     {
         public static HudManager Instance { get; private set; }
     
-        //This should actually be in it's own file called "AbilityUI",
-        //which binds directly to an ability and provides RO access
-        [SerializeField] private Button abilityButton;
-        [SerializeField] private Image abilityFillBar;
-        [SerializeField] private Image abilityIcon;
+        [Header("Interactables")]
+        [SerializeField] private AbilityUIBind abilityA;
+        [SerializeField] private AbilityUIBind abilityB;
         
-        [SerializeField] private Button cluckButton;
-        [SerializeField] private Image cluckFillBar;
-        [SerializeField] private Image cluckIcon;
-        
+        //We want these variables to exist in the Unity editor so we can customize, but not to exist in builds that don't need them.
+#if (!UNITY_STANDALONE && !UNITY_WEBGL) || UNITY_EDITOR
         [SerializeField] private Joystick stick;
-
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private float lookSpeed = 20; // Just to make looking around a bit easier
+        [SerializeField, Range(0,1)] private float stickDeadZoneY = 0.02f; // Just to make looking around a bit easier
+        private float _lookMultiplier;
         private PlayerChicken _owner;
-        private Canvas _canvas;
+#endif
         
+        [Header("HUD")]
+        [SerializeField] private Canvas canvas;
+
+        [Header("HUD | Chickens")]
+        [SerializeField] private Sprite unCagedSprite;
+        [SerializeField] private Sprite cagedSprite;
+        [SerializeField] private Image templateObject;
+        [SerializeField] private Transform cagedTransform;
+        [SerializeField] private Transform unCagedTransform;
+
         private void Awake()
         {
             if(Instance && Instance != this)
@@ -32,114 +41,118 @@ namespace UI
                 return;
             }
 
-            _canvas = GetComponent<Canvas>();
             Instance = this;
-        
-#if !UNITY_STANDALONE || UNITY_EDITOR
-            stick.gameObject.SetActive(true);
-#endif
-        
-        }
-
-        private void Start()
-        {
+           
             OnUIScaleChanged(SettingsManager.currentSettings.UIScale);
+            
+#if !UNITY_STANDALONE && !UNITY_WEBGL
+            stick.gameObject.SetActive(true);
+            settingsButton.gameObject.SetActive(true);
+            settingsButton.onClick.AddListener(EnterSettings);
+#endif
         }
-
         private void OnEnable()
         {
             SettingsManager.SaveFile.onUIScaleChanged += OnUIScaleChanged;
-#if !UNITY_STANDALONE || UNITY_EDITOR
+#if !UNITY_STANDALONE && !UNITY_WEBGL
             SettingsManager.SaveFile.onLookSenseChanged += OnLookSensChanged;
-            _lookMulitplier = SettingsManager.currentSettings.LookSensitivity;
-            #endif
-        }
-#if !UNITY_STANDALONE || UNITY_EDITOR
-        private void OnLookSensChanged(float obj)
-        {
-            _lookMulitplier = obj;
-        }
+            OnLookSensChanged(SettingsManager.currentSettings.LookSensitivity);
 #endif
+        }
 
         private void OnDisable()
         {
             SettingsManager.SaveFile.onUIScaleChanged -= OnUIScaleChanged;
-#if !UNITY_STANDALONE || UNITY_EDITOR
+#if !UNITY_STANDALONE && !UNITY_WEBGL
             SettingsManager.SaveFile.onLookSenseChanged -= OnLookSensChanged;
-            #endif
+#endif
         }
     
         private void OnUIScaleChanged(float obj)
         {
-            _canvas.scaleFactor = obj;// * 100;
+            canvas.scaleFactor = obj;
         }
-
+        #region Registering Chickens
         public void BindPlayer(PlayerChicken player)
         {
             _owner = player;
-            SetAbilityIcons();
-            SetAbilityPercent(1);
-            SetCluckAbilityPercent(1);
+            
+            //Bind abilities
+            abilityA.SetTargetAbility(player.Ability);
+            abilityB.SetTargetAbility(player.Cluck);
+        }
+
         
-            _owner.Ability.BindAbilityUpdated(SetAbilityPercent);
-            _owner.Cluck.BindAbilityUpdated(SetCluckAbilityPercent);
 
-        }
-
-        public void SetAbilityIcons()
+        public void RegisterChicken()
         {
-            abilityIcon.sprite = _owner.Ability.Icon;
-            cluckIcon.sprite = _owner.Cluck.Icon;
+            print("Registering Chicken");
+            Instantiate(templateObject, unCagedTransform).sprite = cagedSprite;
         }
 
-        public void SetAbilityPercent(float percent)
+        public void OnChickenRescued()
         {
-            abilityFillBar.fillAmount = percent;
-            abilityButton.interactable = percent >= 1;
-        }
-    
-        public void SetCluckAbilityPercent(float percent)
-        {
-            cluckFillBar.fillAmount = percent;
-            cluckButton.interactable = percent >= 1;
-        }
-    
-        //Bind actions the same way our controller binds actions
-        public void MimicActionAbility()
-        {
-            _owner.ChangeAbilityState(true);
+            print("Chicken Rescued");
+            Transform t = unCagedTransform.GetChild(0);
+            t.SetParent(cagedTransform ,false) ;
+            t.GetComponent<Image>().sprite = unCagedSprite;
         }
 
-        public void MimicReleasedActionAbility()
+        public void OnChickenCaptured()
         {
-            _owner.ChangeAbilityState(false);
+            print("Chicken Captured");
+            Transform t = cagedTransform.GetChild(0);
+            t.SetParent(unCagedTransform ,false) ;
+            t.GetComponent<Image>().sprite = cagedSprite;
         }
 
-        public void MimicCluckAbility()
+        public void OnChickenEscaped()
         {
-            _owner.ChangeCluckState(true);
+            print("Chicken Escaped");
+            Destroy(cagedTransform.GetChild(0).gameObject);
         }
-    
-        public void MimicReleasedCluckAbility()
-        {
-            _owner.ChangeCluckState(false);
-        }
+        #endregion
+        
+        #region Mobile
+#if !UNITY_STANDALONE && !UNITY_WEBGL
 
-#if !UNITY_STANDALONE || UNITY_EDITOR
-        [SerializeField] private float lookSpeed = 5;
-        private float _lookMulitplier;
-#if UNITY_EDITOR
-        [SerializeField] private bool stickEnabled;
-#endif
+        private static Vector2 _displayScale;
+        
+        #if UNITY_EDITOR
+        [SerializeField] private bool editorPhoneMode = true;
+        #endif
+        
         private void Update()
         {
-#if UNITY_EDITOR
-            if (!stickEnabled) return;
-#endif
-
+            #if UNITY_EDITOR
+            if (!editorPhoneMode) return;
+            #endif
             _owner.Move(stick.Direction != Vector2.zero ? Vector2.up : Vector2.zero);
-            _owner.Look(stick.Direction * (lookSpeed * _lookMulitplier));
+            //For looking, we should check to see if the magnitude is some really small number, if it is, we should actually just ignore it.
+            Vector2 value = new Vector2(stick.Direction.x, Mathf.Abs(stick.Direction.y) > stickDeadZoneY?stick.Direction.y: 0);
+            _owner.Look(Vector2.Scale(value ,_displayScale));
+        }
+        
+        private void OnLookSensChanged(float obj)
+        {
+            _lookMultiplier = obj;
+            _displayScale = new Vector2(1, (float)Screen.width / Screen.height) *(lookSpeed * _lookMultiplier);
+        }
+        
+        private void EnterSettings()
+        {
+            settingsButton.onClick.RemoveAllListeners();
+            settingsButton.onClick.AddListener(ExitSettings);
+            Settings.OpenSettings(false);
+        }
+
+        private void ExitSettings()
+        {
+            settingsButton.onClick.RemoveAllListeners();
+            settingsButton.onClick.AddListener(EnterSettings);
+            Settings.CloseSettings();
         }
 #endif
+        #endregion
     }
 }

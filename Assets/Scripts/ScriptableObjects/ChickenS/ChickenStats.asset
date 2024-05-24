@@ -15,7 +15,7 @@ MonoBehaviour:
   speed: 8
   maxSpeed: 2
   footRadius: 0.2
-  footDistance: 0.4
+  footDistance: 0.5
   bounceSfx: {fileID: 8300000, guid: e555aba5081197149806e60795daee1d, type: 3}
   bushSfx: {fileID: 8300000, guid: f72fadd6af0eefc4b8ad6f66d5f5d918, type: 3}
   waterSfx: {fileID: 0}

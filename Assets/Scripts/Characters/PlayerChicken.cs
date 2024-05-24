@@ -3,6 +3,7 @@ using Game;
 using Managers;
 using UI;
 using UnityEngine;
+using Utilities;
 
 namespace Characters
 {
@@ -28,12 +29,70 @@ namespace Characters
             PlayerControls.Init(this);
             PlayerControls.DisableUI();
         }
-    
+
+        public override void ReleaseChicken()
+        {
+            //The player chicken in this version of the game will always be trapped.
+            //It's possible to make it so that the other chickens can free the player, and reenable it.
+            
+            enabled = true;
+            PlayerControls.DisableUI();
+            cluckAbility.StopAbility();
+            
+            //Remove pop-up
+            
+        }
+
+        public override void EscapeAndMoveTo(Vector3 position)
+        {
+            print("Player WON game");
+            
+            //Stop Inputs
+            PlayerControls.EnableUI();
+            
+            //Stop movement
+            LookDirection = Vector2.zero;
+            MoveDirection = transform.TransformDirection((transform.position - position).normalized);
+            
+            //Disable all other controls
+            enabled = false;
+            
+            //Tell the GameManager that we lost
+            
+            //Tell the UI that we lost
+            
+        }
+
+        public override void CaptureChicken()
+        {
+            print("Player LOST game");
+            
+            //Stop Inputs
+            PlayerControls.EnableUI();
+            
+            //Stop movement
+            MoveDirection = Vector3.zero;
+            LookDirection = Vector2.zero;
+            
+            //Stop the animator
+            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, moveSpeed);
+            cluckAbility.StartAbility();
+            
+            //Toggle Camera effects
+            caughtCam.SetActive(true);
+            
+            //Disable all other controls
+            enabled = false;
+            
+            //Tell the GameManager that we lost
+            
+            //Tell the UI that we lost
+            
+        }
+
+
         private void OnEnable()
         {
-            print("Binding Events");
-            EndGoal.onGameWon += OnGameWon;
-            CaptureZone.onGameLoss += OnGameLoss;
             SettingsManager.SaveFile.onLookSenseChanged += OnLookSensChanged;
             _lookSpeed = SettingsManager.currentSettings.LookSensitivity;
         }
@@ -41,10 +100,6 @@ namespace Characters
     
         private void OnDisable()
         {
-            print("Unbinding Events");
-
-            EndGoal.onGameWon -= OnGameWon;
-            CaptureZone.onGameLoss -= OnGameLoss;
             SettingsManager.SaveFile.onLookSenseChanged -= OnLookSensChanged;
         }
 
@@ -54,29 +109,6 @@ namespace Characters
         }
 
 
-        private void OnGameLoss()
-        {
-            PlayerControls.EnableUI();
-            
-            //Stop camera movement
-            MoveDirection = Vector3.zero;
-            LookDirection = Vector2.zero;
-
-            caughtCam.SetActive(true);
-            
-            enabled = false;
-        }
-
-        private void OnGameWon()
-        {
-            print("Player regis won game");
-            PlayerControls.EnableUI();
-            //Stop camera movement
-            //_moveDirection = Vector3.zero;
-            LookDirection = Vector2.zero;
-
-            MoveDirection = transform.TransformDirection((transform.position - EndGoal.TargetPosition).normalized);
-        }
     
         private void LateUpdate()
         {

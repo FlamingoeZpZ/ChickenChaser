@@ -17,7 +17,7 @@ namespace Ability
 
         protected override int AbilityTriggerID() => StaticUtilities.JumpAnimID;
 
-        protected override bool CanActivate()
+        public override bool CanActivate()
         {
             return Owner.IsGrounded && base.CanActivate();
         }

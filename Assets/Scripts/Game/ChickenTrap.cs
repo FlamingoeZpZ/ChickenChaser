@@ -20,7 +20,7 @@ namespace Game
 
         private void OnTriggerStay(Collider other)
         {
-            if (1 << other.gameObject.layer != StaticUtilities.PlayerLayer) return;
+            if (!other.attachedRigidbody.TryGetComponent(out Chicken c) || !c.isActiveAndEnabled) return;
             _currentDecayTime += Time.deltaTime;
             _myMaterial.SetFloat(StaticUtilities.FillMatID, _currentDecayTime / decayTime);
             if (_currentDecayTime >= decayTime)
@@ -32,7 +32,7 @@ namespace Game
         private void FreeChicken()
         {
             _chicken.transform.parent = null;
-            _chicken.enabled = true;
+            _chicken.ReleaseChicken();
             Destroy(gameObject);
         }
 
@@ -40,7 +40,7 @@ namespace Game
         {
             _chicken = c;
             c.transform.parent = transform.GetChild(0);
-            c.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            c.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             c.enabled = false; //Disabling the AI component, SHOULD automatically enable the secondary look at component
         }
     }

@@ -30,8 +30,7 @@ namespace AI
             Vector3 fwd = head.forward;
             Vector3 pos = head.position;
             
-            int n = Physics.OverlapSphereNonAlloc(pos, stats.VisionDistance, _maxDetections,
-                StaticUtilities.PlayerLayer);
+            int n = Physics.OverlapSphereNonAlloc(pos, stats.VisionDistance, _maxDetections, StaticUtilities.DetectableLayer);
             if (n == 0) return;
 
             for (int i = 0; i < n; ++i)

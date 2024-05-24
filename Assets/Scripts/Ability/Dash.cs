@@ -84,7 +84,7 @@ namespace Ability
         }
 
 
-        protected override bool CanActivate()
+        public override bool CanActivate()
         {
             //Partially redundant, but you can have an additional cooldown this way.
             return _canDash && base.CanActivate();

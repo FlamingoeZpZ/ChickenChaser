@@ -26,7 +26,7 @@ namespace Ability
             AudioDetection.onSoundPlayed.Invoke(transform.position, 10, 20, EAudioLayer.ChickenEmergency);
         }
 
-        protected override bool CanActivate()
+        public override bool CanActivate()
         {
             //Must be moving, or barely.
             return Owner.MoveSpeed < 0.2f && base.CanActivate();

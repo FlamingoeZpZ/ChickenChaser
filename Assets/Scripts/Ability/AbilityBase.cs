@@ -17,20 +17,15 @@ namespace Ability
         protected virtual int AbilityBoolID() => 0;
         protected virtual int AbilityTriggerID() => 0;
 
-
-
+        
         protected Chicken Owner;
         protected Animator Animator;
+        
         private bool _isReady = true;
         private bool _isBeingHeld;
         private float _currentCooldownTime;
-        private Action<float> _onAbilityUpdated;
         public Sprite Icon => icon;
 
-        public void BindAbilityUpdated(Action<float> action)
-        {
-            _onAbilityUpdated += action;
-        }
         
         private IEnumerator BeginCooldown()
         {
@@ -44,13 +39,11 @@ namespace Ability
                 _isReady = false;
                 while (_currentCooldownTime < cooldown)
                 {
-                    _onAbilityUpdated?.Invoke(_currentCooldownTime / cooldown);
                     _currentCooldownTime += Time.deltaTime;
                     yield return null;
                 }
 
                 //Make sure that it's running!
-                _onAbilityUpdated?.Invoke(1);
                 _isReady = true;
                 
             } while (_isBeingHeld && canBeHeld);
@@ -82,12 +75,16 @@ namespace Ability
 
 
 
-        protected virtual bool CanActivate()
+        public virtual bool CanActivate()
         {
             return _isReady;
         }
 
         protected abstract void Activate();
 
+        public float GetReadyPercent()
+        {
+            return _currentCooldownTime / cooldown;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -43,6 +44,9 @@ namespace Managers
 
         private bool _initialized;
         private const float StartTime = 6.4f;
+
+        private static int numChickens;
+        private static int numChickensSaved;
     
         private void Awake()
         {
@@ -84,7 +88,8 @@ namespace Managers
         {
         
             _inGame = true;
-        
+            numChickens = 0;
+            numChickensSaved = 0;
             //OStartCoroutine(PEN UI COVERING
             yield return TransitionScreen(openTime, openCurve, true);
             yield return new WaitForSeconds(openTime);
@@ -188,7 +193,16 @@ namespace Managers
             Instance.StartCoroutine(Instance.source.TransitionSound(isChasing?Instance.chaseMusic:Instance.stealthMusic,duration));
         }
 
-        
+
+        public static void RegisterAIEscape()
+        {
+            ++numChickensSaved;
+        }
+
+        public static void RegisterAIChicken()
+        {
+            ++numChickens;
+        }
     }
 
     [Serializable]
