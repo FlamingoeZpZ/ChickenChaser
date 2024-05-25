@@ -11,7 +11,7 @@ public class EndGoal : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         //If they're not a desired layer.
-        if ((other.gameObject.layer & allowedLayers) == 0) return;
+        if (((1 << other.gameObject.layer) & allowedLayers) == 0) return;
         
         if (other.attachedRigidbody.TryGetComponent(out Chicken c))
         {

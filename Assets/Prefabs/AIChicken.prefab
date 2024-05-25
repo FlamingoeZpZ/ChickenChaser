@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e615a5a14290a48a8ad199475bdb07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 58fbae7c8c1a43d4d894d164104ab5a7, type: 2}
+  stats: {fileID: 11400000, guid: 4feac6e0ec5e67a47a0071d80241ea95, type: 2}
   head: {fileID: 2734304907029226763}
   footTransform: {fileID: 821473674308985966}
   landEffect: {fileID: 3095555676156603147}

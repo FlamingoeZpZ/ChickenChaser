@@ -14,6 +14,8 @@ namespace Characters
         [SerializeField] private FaceTarget faceTarget;
         private NavMeshAgent _agent;
 
+        public static int NumActiveAIChickens { get; private set; }
+
         protected override void Awake()
         {
             base.Awake();
@@ -34,7 +36,9 @@ namespace Characters
         {
             Animator.SetBool(StaticUtilities.CluckAnimID, true);
             faceTarget.enabled = false;
-          
+            PlayerChicken.onPlayerCaught += MoveToPlayer;
+            PlayerChicken.onPlayerEscaped += MoveToPlayer;
+            ++NumActiveAIChickens;
         }
 
         private void OnDisable()
@@ -42,7 +46,16 @@ namespace Characters
             Animator.SetBool(StaticUtilities.CluckAnimID, false);
             faceTarget.enabled = true;
             StopAllCoroutines();
-     
+            PlayerChicken.onPlayerCaught -= MoveToPlayer;
+            PlayerChicken.onPlayerEscaped -= MoveToPlayer;
+            --NumActiveAIChickens;
+
+        }
+
+        //Without the player, let's just rush towards the player... If we get caught, oh well.
+        private void MoveToPlayer(Vector3 obj)
+        {
+            _agent.SetDestination(obj);
         }
 
         protected override void HandleMovement()
@@ -82,15 +95,20 @@ namespace Characters
             
             //Then we've successfully escaped, so let's update the GameManager, who will update the UI.
             GameManager.RegisterAIEscape();
-            
+            GameManager.PlayUISound(stats.OnEscape);
             
             HudManager.Instance.OnChickenEscaped();
+            
+            Destroy(gameObject);
+            
         }
 
         public override void CaptureChicken()
         {
             enabled = false;
             HudManager.Instance.OnChickenCaptured();
+            GameManager.PlayUISound(stats.OnCapture);
+
         }
 
         public void AddDetection(Vector3 location, float detection, EDetectionType type)

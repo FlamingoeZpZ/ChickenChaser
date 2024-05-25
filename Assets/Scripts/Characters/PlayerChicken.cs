@@ -1,3 +1,4 @@
+using System;
 using Ability;
 using Game;
 using Managers;
@@ -21,6 +22,10 @@ namespace Characters
         
         public AbilityBase Ability => abilityBaseController;
         public AbilityBase Cluck => cluckAbility;
+
+        public static Action<Vector3> onPlayerCaught;
+        public static Action<Vector3> onPlayerEscaped;
+        public static Action onPlayerRescued; // It's not out of the picture that another chicken can rescue the player.
         
         protected override void Awake()
         {
@@ -28,6 +33,8 @@ namespace Characters
             HudManager.Instance.BindPlayer(this);
             PlayerControls.Init(this);
             PlayerControls.DisableUI();
+            
+            
         }
 
         public override void ReleaseChicken()
@@ -39,6 +46,9 @@ namespace Characters
             PlayerControls.DisableUI();
             cluckAbility.StopAbility();
             
+            onPlayerRescued?.Invoke();
+            
+       
             //Remove pop-up
             
         }
@@ -59,6 +69,9 @@ namespace Characters
             
             //Tell the GameManager that we lost
             
+            GameManager.PlayUISound(stats.OnEscape);
+            
+            onPlayerEscaped?.Invoke(transform.position);
             //Tell the UI that we lost
             
         }
@@ -85,6 +98,8 @@ namespace Characters
             enabled = false;
             
             //Tell the GameManager that we lost
+            onPlayerCaught?.Invoke(transform.position);
+            GameManager.PlayUISound(stats.OnCapture);
             
             //Tell the UI that we lost
             

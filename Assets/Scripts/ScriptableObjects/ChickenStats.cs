@@ -22,15 +22,9 @@ namespace ScriptableObjects
         //If there are multiple types of chicken, this should actually probably be seperated.
         //As the sound effects will likely be the same regardless.
         [Header("Effects")] 
-        [SerializeField] private AudioClip bounceSfx;
-        [SerializeField] private AudioClip bushSfx;
-        [SerializeField] private AudioClip waterSfx;
         [SerializeField] private AudioClip onCapture;
         [SerializeField] private AudioClip onEscape;
 
-        public AudioClip BounceSfx => bounceSfx;
-        public AudioClip BushSfx => bushSfx;
-        public AudioClip WaterSfx => waterSfx;
         public AudioClip OnCapture => onCapture;
         public AudioClip OnEscape => onEscape;
     }

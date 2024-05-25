@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -45,9 +44,11 @@ namespace Managers
         private bool _initialized;
         private const float StartTime = 6.4f;
 
-        private static int numChickens;
-        private static int numChickensSaved;
-    
+        public static int NumChickens { get; private set; }
+        public static int NumChickensSaved { get; private set; }
+
+        public static float TimeInLevel { get; private set; }
+
         private void Awake()
         {
             if (Instance && Instance != this)
@@ -75,11 +76,13 @@ namespace Managers
             {
                 SoundsDictionary.Add(set.tag, set);
             }
+
+            if (SceneManager.loadedSceneCount == 1)
+                SceneManager.LoadScene(1, LoadSceneMode.Additive);
         }
 
         public static void PlayUISound(AudioClip clip)
         {
-            Debug.Log("Callstrac");
             Instance.source.PlayOneShot(clip, SettingsManager.currentSettings.SoundVolume);
         }
 
@@ -88,8 +91,8 @@ namespace Managers
         {
         
             _inGame = true;
-            numChickens = 0;
-            numChickensSaved = 0;
+            NumChickens = 0;
+            NumChickensSaved = 0;
             //OStartCoroutine(PEN UI COVERING
             yield return TransitionScreen(openTime, openCurve, true);
             yield return new WaitForSeconds(openTime);
@@ -121,7 +124,7 @@ namespace Managers
                 source.time = StartTime;
             }
             source.Play();
-
+            TimeInLevel = 0;
         }
 
         private IEnumerator LoadMenuImpl()
@@ -196,12 +199,19 @@ namespace Managers
 
         public static void RegisterAIEscape()
         {
-            ++numChickensSaved;
+            ++NumChickensSaved;
         }
 
         public static void RegisterAIChicken()
         {
-            ++numChickens;
+            ++NumChickens;
+        }
+
+        private void LateUpdate()
+        {
+            if (!_inGame) return;
+
+            TimeInLevel += Time.deltaTime;
         }
     }
 
