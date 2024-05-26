@@ -36,11 +36,7 @@ namespace Managers
         public static void EnableUI()
         {
             DisablePlayer();
-            _controls.Game.Disable();
             _controls.UI.Enable();
-            
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
 
         public static void DisableUI()
@@ -51,12 +47,17 @@ namespace Managers
             Cursor.visible = false;
         }
 
-        private static void DisablePlayer()
+        public static void DisablePlayer()
         {
+            _controls.UI.Disable();
+            _controls.Game.Disable();
             p.Look(Vector2.zero);
             p.Move(Vector2.zero);
             p.ChangeAbilityState(false);
             p.ChangeCluckState(false);
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }

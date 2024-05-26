@@ -1,6 +1,5 @@
 using System;
 using Ability;
-using Game;
 using Managers;
 using UI;
 using UnityEngine;
@@ -58,17 +57,15 @@ namespace Characters
             print("Player WON game");
             
             //Stop Inputs
-            PlayerControls.EnableUI();
+            PlayerControls.DisablePlayer();
             
             //Stop movement
             LookDirection = Vector2.zero;
             MoveDirection = transform.TransformDirection((transform.position - position).normalized);
             
-            //Disable all other controls
-            enabled = false;
+            
             
             //Tell the GameManager that we lost
-            
             GameManager.PlayUISound(stats.OnEscape);
             
             onPlayerEscaped?.Invoke(transform.position);
@@ -81,7 +78,7 @@ namespace Characters
             print("Player LOST game");
             
             //Stop Inputs
-            PlayerControls.EnableUI();
+            PlayerControls.DisablePlayer();
             
             //Stop movement
             MoveDirection = Vector3.zero;

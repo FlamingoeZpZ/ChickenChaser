@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Globalization;
 using Characters;
 using Managers;
 using TMPro;
@@ -27,9 +29,9 @@ namespace UI
         [SerializeField] private float lookSpeed = 20; // Just to make looking around a bit easier
         [SerializeField, Range(0,1)] private float stickDeadZoneY = 0.02f; // Just to make looking around a bit easier
         private float _lookMultiplier;
-        private PlayerChicken _owner;
 #endif
         
+        private PlayerChicken _owner;
 
 
         [Header("Chickens")]
@@ -45,7 +47,7 @@ namespace UI
         [SerializeField] private TextMeshProUGUI timeSpent;
         [SerializeField] private TextMeshProUGUI finalScore;
         [SerializeField] private GameObject hopeIsNotLost;
-        [SerializeField] private GameObject mainMenu;
+        [SerializeField] private Button mainMenu;
         
         //This should actually be it's own script.
         [Header("Score")] 
@@ -53,8 +55,9 @@ namespace UI
         [SerializeField] private float expectedEndTime;
         [SerializeField] private int maximumTimePoints = 10000;
         [SerializeField] private int pointsPerSavedChicken = 1000;
-        private float cachedTime;
+        private float _cachedTime;
         private bool _canLoadMenu;
+        private bool _cachedDidWin;
         
         
         private void Awake()
@@ -67,6 +70,9 @@ namespace UI
 
             Instance = this;
            
+            hudCanvas.gameObject.SetActive(true);
+            endCanvas.gameObject.SetActive(false);
+            
             OnUIScaleChanged(SettingsManager.currentSettings.UIScale);
             
 #if !UNITY_STANDALONE && !UNITY_WEBGL
@@ -129,17 +135,26 @@ namespace UI
 
             endStatus.text = won ? "ESCAPED" : "CAUGHT";
             //This is currently not recieving updates when a regular chicken escapes...
-            cachedTime = GameManager.TimeInLevel;
+            _cachedTime = GameManager.TimeInLevel;
+            _cachedDidWin = won;
             UpdateScore();
-
             //We need a method to tell whether we won.
         }
 
         private void UpdateScore()
         {
             numChickensSaved.text = GameManager.NumChickensSaved + "/" + GameManager.NumChickens;
-            timeSpent.text = cachedTime.ToString("mm':'ss':'fff");
-            finalScore.text = (1 - scoreCurve.Evaluate(cachedTime / expectedEndTime)) * maximumTimePoints + (pointsPerSavedChicken * GameManager.NumChickensSaved).ToString();
+            TimeSpan s = TimeSpan.FromSeconds(_cachedTime);
+            timeSpent.text = $"{s.Minutes}m {s.Seconds}s {s.Milliseconds}ms";
+            finalScore.text = ((_cachedDidWin?1 - scoreCurve.Evaluate(_cachedTime / expectedEndTime):0) * maximumTimePoints + (pointsPerSavedChicken * GameManager.NumChickensSaved)).ToString(CultureInfo.InvariantCulture);
+
+            bool x = AIChicken.NumActiveAIChickens == 0;
+            print("There are : " + AIChicken.NumActiveAIChickens +" Active chickens");
+            //Determine which button to show
+            hopeIsNotLost.SetActive(!x);
+            mainMenu.gameObject.SetActive(x);
+            
+            mainMenu.Select();
         }
 
         public void LoadMainMenu()

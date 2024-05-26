@@ -64,7 +64,7 @@ namespace Managers
 
             source.time = StartTime;
             
-            StartCoroutine( TransitionScreen(closeTime, closeCurve, false));
+            
 
             SettingsManager.SaveFile.onMusicVolumeChanged += x =>
             {
@@ -76,9 +76,11 @@ namespace Managers
             {
                 SoundsDictionary.Add(set.tag, set);
             }
-
-            if (SceneManager.loadedSceneCount == 1)
-                SceneManager.LoadScene(1, LoadSceneMode.Additive);
+            
+            print(SceneManager.loadedSceneCount);
+            if (SceneManager.loadedSceneCount <= 1)
+                SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive).completed += _ => 
+                    StartCoroutine( TransitionScreen(closeTime, closeCurve, false));
         }
 
         public static void PlayUISound(AudioClip clip)
@@ -99,9 +101,9 @@ namespace Managers
             source.Stop();
             DateTime currentTime = DateTime.Now;
             //Additively remove the player scene?
-            SceneManager.UnloadSceneAsync(2).completed += _ =>
+            SceneManager.UnloadSceneAsync(1).completed += _ =>
                 //Additively load the main menu
-                SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive).completed += _ =>
+                SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive).completed += _ =>
                     StartCoroutine(ReadyGame(currentTime));
             
         }
@@ -138,9 +140,9 @@ namespace Managers
             DateTime currentTime = DateTime.Now;
 
             //Additively remove the player scene?
-            SceneManager.UnloadSceneAsync(1).completed += _ =>
+            SceneManager.UnloadSceneAsync(2).completed += _ =>
                 //Additively load the main menu
-                SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive).completed += _ =>
+                SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive).completed += _ =>
                     StartCoroutine(ReadyGame(currentTime));
             //CLOSE UI COVERING
         }
@@ -173,6 +175,7 @@ namespace Managers
                 o += Time.deltaTime;
                 float perc = o / duration;
                 float eval = curve.Evaluate(perc);
+
                 source.volume = Mathf.Min(audioMin,eval);
                 _transition.SetFloat(StaticUtilities.FillMatID, eval);
                 yield return null;

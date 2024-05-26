@@ -43,13 +43,14 @@ namespace Characters
 
         private void OnDisable()
         {
+            print("Disabled: " + NumActiveAIChickens);
             Animator.SetBool(StaticUtilities.CluckAnimID, false);
             faceTarget.enabled = true;
             StopAllCoroutines();
             PlayerChicken.onPlayerCaught -= MoveToPlayer;
             PlayerChicken.onPlayerEscaped -= MoveToPlayer;
+          
             --NumActiveAIChickens;
-
         }
 
         //Without the player, let's just rush towards the player... If we get caught, oh well.
@@ -97,8 +98,10 @@ namespace Characters
             GameManager.RegisterAIEscape();
             GameManager.PlayUISound(stats.OnEscape);
             
+            //Giga Cheesy, but we need to make sure that the num chickos is right.
+            --NumActiveAIChickens;
             HudManager.Instance.OnChickenEscaped();
-            
+            ++NumActiveAIChickens;
             Destroy(gameObject);
             
         }
