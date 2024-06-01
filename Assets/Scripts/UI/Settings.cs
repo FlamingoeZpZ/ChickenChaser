@@ -8,16 +8,18 @@ namespace UI
     public class Settings : MonoBehaviour
     {
 
+        [SerializeField] private ToggleSlider fullScreen;
+        
         [SerializeField] private Slider LookSlider;
         [SerializeField] private Slider MusicSlider;
         [SerializeField] private Slider SoundSlider;
         [SerializeField] private Slider UISlider;
-
+        
         [SerializeField] private TextMeshProUGUI lookSliderText;
         [SerializeField] private TextMeshProUGUI musicSliderText;
         [SerializeField] private TextMeshProUGUI soundSliderText;
         [SerializeField] private TextMeshProUGUI uISliderText;
-    
+        
         [SerializeField] private TMP_Dropdown graphics;
         [SerializeField] private AudioClip openNoise;
         [SerializeField] private AudioClip closeNoise;
@@ -62,16 +64,33 @@ namespace UI
             SoundSlider.onValueChanged.AddListener(SetSoundVolume);
             UISlider.onValueChanged.AddListener(SetUIScale);
             graphics.onValueChanged.AddListener(SetGraphicsQuality);
-        
+            fullScreen.OnValueChanged += SetFullScreen;
+            
             Rebind();
         
             gameObject.SetActive(false);
+            
+            //If we're not playing on standalone, we don't need the button.
+            #if !UNITY_STANDALONE
+            fullScreen.gameObject.SetActive(false);
+            #endif
+            
+        }
+        
+        private void SetFullScreen(bool val)
+        {
+            FullScreenMode x = val ? FullScreenMode.FullScreenWindow: FullScreenMode.Windowed;
+            SettingsManager.currentSettings.fullScreen = x;
+            Screen.fullScreenMode = x; // There is a boolean option, but this is a little bit more flexible for porting the code.
+            print("Fullscreen set");
         }
 
         private void SetGraphicsQuality(int val)
         {
             SettingsManager.currentSettings.graphics = (SettingsManager.EGraphicsState)val;
             QualitySettings.SetQualityLevel(val);
+            print("SetGraphicsQuality set");
+
         }
 
         public void ResetSaveData()
@@ -96,6 +115,7 @@ namespace UI
             uISliderText.text = SettingsManager.currentSettings.UIScale.ToString("P0");
         
             graphics.SetValueWithoutNotify(QualitySettings.GetQualityLevel());
+            fullScreen.State = SettingsManager.currentSettings.fullScreen == FullScreenMode.FullScreenWindow;
 
         }
 
@@ -108,24 +128,32 @@ namespace UI
         {
             SettingsManager.currentSettings.LookSensitivity = val;
             lookSliderText.text = val.ToString("F");
+            print("SetLookSensitivity set");
+
         }
 
         private void SetSoundVolume(float val)
         {
             SettingsManager.currentSettings.SoundVolume = val;
             soundSliderText.text = val.ToString("P0");
+            print("SetSoundVolume set");
+
         }
 
         private void SetMusicVolume(float val)
         {
             SettingsManager.currentSettings.MusicVolume = val;
             musicSliderText.text = val.ToString("P0");
+            print("SetMusicVolume set");
+
         }
 
         private void SetUIScale(float val)
         {
             SettingsManager.currentSettings.UIScale = val;
             uISliderText.text = val.ToString("P0");
+            print("SetUIScale set");
+
         }
 
         private void OnDisable()

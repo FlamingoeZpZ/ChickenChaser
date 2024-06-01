@@ -21,6 +21,7 @@ MonoBehaviour:
   chaseMoveSpeed: 4
   minIdleTime: 1
   maxIdleTime: 3
+  diveDistance: 3
   ignoreWhileChasing: 2
   huhs:
   - {fileID: 8300000, guid: 71e9e08a514155b4683630d99cf3bd51, type: 3}

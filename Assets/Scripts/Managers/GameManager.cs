@@ -33,6 +33,12 @@ namespace Managers
         [SerializeField] private AudioClip mainMusic;
 
         [SerializeField] private AudioVolumeRangeSet[] audioSets;
+        
+        //Should not be here, but this is the fastest way to do it
+        [Header("Buttons")]
+        [SerializeField] private Button toMainMenu;
+        [SerializeField] private Button quitGame;
+        
 
         public static readonly Dictionary<string, AudioVolumeRangeSet> SoundsDictionary =
             new Dictionary<string, AudioVolumeRangeSet>();
@@ -51,6 +57,7 @@ namespace Managers
 
         private void Awake()
         {
+            print("GM A");
             if (Instance && Instance != this)
             {
                 Destroy(Instance.gameObject);
@@ -58,6 +65,7 @@ namespace Managers
             }
             DontDestroyOnLoad(gameObject);
             Instance = this;
+            print("GM B");
 
             _transition = canvas.transform.GetChild(0).GetComponent<Image>().material;
             _textBlocks = canvas.transform.GetChild(0).GetChild(0).gameObject;
@@ -65,6 +73,7 @@ namespace Managers
             source.time = StartTime;
             
             
+            print("GM C");
 
             SettingsManager.SaveFile.onMusicVolumeChanged += x =>
             {
@@ -76,11 +85,24 @@ namespace Managers
             {
                 SoundsDictionary.Add(set.tag, set);
             }
-            
+            print("GM D");
+
             print(SceneManager.loadedSceneCount);
+            toMainMenu.gameObject.SetActive(false);
+            quitGame.gameObject.SetActive(false);
+            //Because the first scene counts as nothing :)
+            #if !UNITY_EDITOR
             if (SceneManager.loadedSceneCount <= 1)
                 SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive).completed += _ => 
                     StartCoroutine( TransitionScreen(closeTime, closeCurve, false));
+            
+            toMainMenu.gameObject.SetActive(false);
+            #if !UNITY_WEBGL // You can't do this in webgl
+            quitGame.gameObject.SetActive(true);
+            #endif
+            #endif
+            print("GM E");
+
         }
 
         public static void PlayUISound(AudioClip clip)
@@ -91,10 +113,12 @@ namespace Managers
 
         private IEnumerator LoadGameImpl()
         {
-        
+            yield break;
             _inGame = true;
             NumChickens = 0;
             NumChickensSaved = 0;
+            toMainMenu.gameObject.SetActive(true);
+            quitGame.gameObject.SetActive(false);
             //OStartCoroutine(PEN UI COVERING
             yield return TransitionScreen(openTime, openCurve, true);
             yield return new WaitForSeconds(openTime);
@@ -110,6 +134,9 @@ namespace Managers
 
         private IEnumerator ReadyGame(DateTime startTime)
         {
+            yield break;
+
+            print("Readying Game");
             var timeSpan = DateTime.Now.Subtract(startTime);
             float s = intendedDelay-timeSpan.Seconds;
             if (s > 0) yield return new WaitForSeconds(s);
@@ -132,6 +159,10 @@ namespace Managers
         private IEnumerator LoadMenuImpl()
         {
             _inGame = false;
+            toMainMenu.gameObject.SetActive(false);
+            #if !UNITY_WEBGL // You can't do this in webgl
+            quitGame.gameObject.SetActive(true);
+            #endif
             //OStartCoroutine(PEN UI COVERING
             yield return TransitionScreen(openTime, openCurve, true);
             yield return new WaitForSeconds(openTime);
@@ -156,6 +187,11 @@ namespace Managers
         public static void LoadMainMenu()
         {
             Instance.StartCoroutine(Instance.LoadMenuImpl());
+        }
+
+        public static void CloseGame()
+        {
+            Application.Quit();
         }
 
         private IEnumerator TransitionScreen(float duration, AnimationCurve curve, bool isOpen)

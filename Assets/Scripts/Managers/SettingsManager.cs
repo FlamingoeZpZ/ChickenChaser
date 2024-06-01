@@ -46,8 +46,9 @@ public static class SettingsManager
             LookSensitivity = 1.0f,
             MusicVolume = 0.5f,
             SoundVolume = 0.5f,
-            UIScale = 1.0f,
-            graphics = EGraphicsState.Balanced
+            UIScale = 0.5f,
+            graphics = EGraphicsState.Balanced,
+            fullScreen = FullScreenMode.FullScreenWindow
         };
     }
 
@@ -74,7 +75,9 @@ public static class SettingsManager
         private float _soundVolume;
         private float _uiScale;
 
+        //No callbacks needed
         public EGraphicsState graphics;
+        public FullScreenMode fullScreen;
 
         public static Action<float> onLookSenseChanged = null;
         public static Action<float> onMusicVolumeChanged = null;

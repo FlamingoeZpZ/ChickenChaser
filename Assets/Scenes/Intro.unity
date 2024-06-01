@@ -948,9 +948,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Managers.GameManager, Assembly-CSharp
-          m_MethodName: PlayUISound
+        - m_Target: {fileID: 266840604}
+          m_TargetAssemblyTypeName: UI.MainMenuCanvas, Assembly-CSharp
+          m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 8300000, guid: db493c8a57f91c74aae7a52cd56be1f6,
@@ -965,9 +965,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Managers.GameManager, Assembly-CSharp
-          m_MethodName: PlayUISound
+        - m_Target: {fileID: 266840604}
+          m_TargetAssemblyTypeName: UI.MainMenuCanvas, Assembly-CSharp
+          m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 8300000, guid: db493c8a57f91c74aae7a52cd56be1f6,
@@ -4064,9 +4064,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Managers.GameManager, Assembly-CSharp
-          m_MethodName: PlayUISound
+        - m_Target: {fileID: 266840604}
+          m_TargetAssemblyTypeName: UI.MainMenuCanvas, Assembly-CSharp
+          m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 8300000, guid: db493c8a57f91c74aae7a52cd56be1f6,
@@ -4081,9 +4081,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Managers.GameManager, Assembly-CSharp
-          m_MethodName: PlayUISound
+        - m_Target: {fileID: 266840604}
+          m_TargetAssemblyTypeName: UI.MainMenuCanvas, Assembly-CSharp
+          m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 8300000, guid: db493c8a57f91c74aae7a52cd56be1f6,
@@ -4453,6 +4453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5cfe15075f5c34d8dbcbf1c8a2432c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zone: {fileID: 0}
 --- !u!1 &1417015606
 GameObject:
   m_ObjectHideFlags: 0
@@ -6071,9 +6072,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Managers.GameManager, Assembly-CSharp
-          m_MethodName: PlayUISound
+        - m_Target: {fileID: 266840604}
+          m_TargetAssemblyTypeName: UI.MainMenuCanvas, Assembly-CSharp
+          m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 8300000, guid: db493c8a57f91c74aae7a52cd56be1f6,
@@ -6088,9 +6089,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Managers.GameManager, Assembly-CSharp
-          m_MethodName: PlayUISound
+        - m_Target: {fileID: 266840604}
+          m_TargetAssemblyTypeName: UI.MainMenuCanvas, Assembly-CSharp
+          m_MethodName: PlaySound
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 8300000, guid: db493c8a57f91c74aae7a52cd56be1f6,
@@ -9748,6 +9749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5cfe15075f5c34d8dbcbf1c8a2432c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zone: {fileID: 0}
 --- !u!1 &8472509360470203315
 GameObject:
   m_ObjectHideFlags: 0

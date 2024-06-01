@@ -33,7 +33,7 @@ namespace Characters
         protected Rigidbody Rb;
         protected Animator Animator;
         protected AudioSource audioSource;
-
+        protected Collider _collider;
         
         private float _visibility = 1;
 
@@ -42,7 +42,6 @@ namespace Characters
 
         private float _fallTime;
 
-        // Start is called before the first frame update
         protected virtual void Awake()
         {
             //_myTransform = transform;
@@ -50,6 +49,8 @@ namespace Characters
             audioSource = GetComponentInChildren<AudioSource>();
             Rb = GetComponent<Rigidbody>();
             Animator = GetComponentInChildren<Animator>();
+            _collider = GetComponentInChildren<Collider>();
+            
             ChickenAnimatorReceiver car = transform.GetChild(0).GetComponent<ChickenAnimatorReceiver>();
             car.OnLandEffect += LandEffect;
             
@@ -125,7 +126,6 @@ namespace Characters
            
 
             
-            print("Chicken landed on :" + hit.transform.name);
             //Make sure the layer is not null
             if (!GameManager.SoundsDictionary.TryGetValue(hit.transform.tag, out AudioVolumeRangeSet set)) return;
             audioSource.pitch = Random.Range(0.8f, 1.2f);

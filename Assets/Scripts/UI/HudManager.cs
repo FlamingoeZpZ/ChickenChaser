@@ -62,6 +62,7 @@ namespace UI
         
         private void Awake()
         {
+            print("Hud Awake");
             if(Instance && Instance != this)
             {
                 Destroy(gameObject);
@@ -189,29 +190,30 @@ namespace UI
         public void RegisterChicken()
         {
             print("Registering Chicken");
-            Instantiate(templateObject, unCagedTransform).sprite = cagedSprite;
+            Instantiate(templateObject, cagedTransform).sprite = cagedSprite;
         }
 
         public void OnChickenRescued()
         {
             print("Chicken Rescued");
-            Transform t = unCagedTransform.GetChild(0);
-            t.SetParent(cagedTransform ,false) ;
+            Transform t = cagedTransform.GetChild(0);
+            t.SetParent(unCagedTransform ,false) ;
             t.GetComponent<Image>().sprite = unCagedSprite;
         }
 
         public void OnChickenCaptured()
         {
             print("Chicken Captured");
-            Transform t = cagedTransform.GetChild(0);
-            t.SetParent(unCagedTransform ,false) ;
+            Transform t = unCagedTransform.GetChild(0);
+            t.SetParent(cagedTransform ,false) ;
             t.GetComponent<Image>().sprite = cagedSprite;
+            UpdateScore();
         }
 
         public void OnChickenEscaped()
         {
             print("Chicken Escaped");
-            Destroy(cagedTransform.GetChild(0).gameObject);
+            Destroy(unCagedTransform.GetChild(0).gameObject);
             UpdateScore();
         }
         #endregion

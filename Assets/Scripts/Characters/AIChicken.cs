@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using AI;
 using Interfaces;
@@ -13,6 +14,7 @@ namespace Characters
     {
         [SerializeField] private FaceTarget faceTarget;
         private NavMeshAgent _agent;
+        
 
         public static int NumActiveAIChickens { get; private set; }
 
@@ -20,7 +22,7 @@ namespace Characters
         {
             base.Awake();
             _agent = GetComponent<NavMeshAgent>();
-            
+        
             _agent.speed = stats.MaxSpeed;
             _agent.acceleration = stats.Speed;
 
@@ -31,14 +33,18 @@ namespace Characters
             HudManager.Instance.RegisterChicken();
         }
 
+
         //public static
         private void OnEnable()
         {
             Animator.SetBool(StaticUtilities.CluckAnimID, true);
             faceTarget.enabled = false;
+            Rb.isKinematic = false;
             PlayerChicken.onPlayerCaught += MoveToPlayer;
             PlayerChicken.onPlayerEscaped += MoveToPlayer;
             ++NumActiveAIChickens;
+            _agent.enabled = true;
+            _collider.enabled = true;
         }
 
         private void OnDisable()
@@ -49,13 +55,18 @@ namespace Characters
             StopAllCoroutines();
             PlayerChicken.onPlayerCaught -= MoveToPlayer;
             PlayerChicken.onPlayerEscaped -= MoveToPlayer;
-          
+            Rb.isKinematic = true;
             --NumActiveAIChickens;
+            //Cancel all previous instructions
+            _agent.ResetPath();
+            _agent.enabled = false;
+            _collider.enabled = false;
         }
 
         //Without the player, let's just rush towards the player... If we get caught, oh well.
         private void MoveToPlayer(Vector3 obj)
         {
+            print("I'm moving to the player");
             _agent.SetDestination(obj);
         }
 
@@ -112,11 +123,13 @@ namespace Characters
             HudManager.Instance.OnChickenCaptured();
             GameManager.PlayUISound(stats.OnCapture);
 
+
         }
 
         public void AddDetection(Vector3 location, float detection, EDetectionType type)
         {
             if (!enabled) return;
+            print("I'm moving towards: " + location);
             _agent.SetDestination(location);
             Animator.SetBool(StaticUtilities.CluckAnimID, false);
         }

@@ -18,7 +18,8 @@ namespace Characters
             Idle, // From idle, after X seconds, we begin pathing. If we see the chicken, enter looking state.
             Pathing, // From pathing, we follow the track until we reach our destination. If we reach the destination, enter idle for X seconds. If we see the chicken, enter looking state
             Looking, // Do not move, if line of sight remains for Y seconds, begin chasing, else enter pathing
-            Chasing // Chase the player, if line of sight is lost, enter the looking state.
+            Chasing, // Chase the player, if line of sight is lost, enter the looking state.
+            Rolling
         }
         
         [SerializeField] private AiStats stats;
@@ -46,9 +47,6 @@ namespace Characters
 
         private Coroutine _decayTimer;
         private Coroutine _currentRoutine;
-        
-        public static Action OnBeginChasing; // Default --> change music
-        
 
         private void Awake()
         {
@@ -91,6 +89,7 @@ namespace Characters
         
         void FaceTarget()
         {
+            if (suggestedForward == Vector3.zero) return;
             Quaternion lookRotation = Quaternion.LookRotation(new Vector3(suggestedForward.x, 0, suggestedForward.z));
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * stats.BaseMoveSpeed);
         }
@@ -100,7 +99,6 @@ namespace Characters
         
         private IEnumerator Idle()
         {
-            print("Entering Idle");
             _myState = EHumanState.Idle;
             if (_previousSuggestedDelay != 0)
             {
@@ -115,7 +113,6 @@ namespace Characters
 
         private IEnumerator Pathing()
         {
-            print("Entering Pathing");
             _pathHandler.SetNextPatrolPoint(); // Cringe....
             //This would work, but it checks every frame.
             _myState = EHumanState.Pathing;
@@ -135,9 +132,12 @@ namespace Characters
 
         private IEnumerator Looking(Vector3 target)
         {
-            print("Entering Looking: " + Time.timeSinceLevelLoad + ", " + timeSinceLastSpoken);
             _myState = EHumanState.Looking;
             _agent.speed = stats.ChaseMoveSpeed;
+            
+            
+            _agent.isStopped = true;
+            
             float nt = Time.timeSinceLevelLoad;
             if (nt - stats.TimeNeededToTalk >= timeSinceLastSpoken)
             {
@@ -170,13 +170,14 @@ namespace Characters
             if(_currentRoutine != null) StopCoroutine(_currentRoutine);
             _currentRoutine = StartCoroutine(Pathing());
             _agent.speed = stats.BaseMoveSpeed;
+            _agent.isStopped = false;
 
         }
         
         //Can only be entered via detection.
         private void Chasing(Vector3 target)
         {
-            print("Entering Chase");
+            _agent.isStopped = false;
             timeSinceLastSpoken = Time.timeSinceLevelLoad;
             _myState = EHumanState.Chasing;
             
@@ -190,24 +191,30 @@ namespace Characters
             //When in chasing state, we will leave the path, and move towards the given location
             _agent.destination = target;
             
+           
+
             AIManager.BeginChasing();
 
         }
+
+        public void EndRoll()
+        {
+            _myState = EHumanState.Looking;
+            RemoveDetection(40);
+        }
+        
+
+
         #endregion
 
         #region Detection
-        public float GetDetection()
-        {
-            return _currentDetection;
-        }
 
         public void AddDetection(Vector3 location, float detection, EDetectionType detectionType)
         {
             //This line of code will allow us to ignore "stimuli" while chasing.
-            if (_myState == EHumanState.Chasing && (detectionType & stats.IgnoreWhileChasing) != 0) return;
+            if ( _myState == EHumanState.Rolling || _myState == EHumanState.Chasing && (detectionType & stats.IgnoreWhileChasing) != 0) return;
             
             _currentDetection = Mathf.Min(_currentDetection + detection * _detectionModifier, stats.MaxDetection);
-            //print($"Adding detection, {location} --> {detection} * {_detectionModifier} + {_currentDetection} --> {_currentDetection}");
             float detectPerc = _currentDetection / stats.MaxDetection;
             _detectionBarMat.SetFloat(StaticUtilities.FillMatID, detectPerc);
             
@@ -229,6 +236,19 @@ namespace Characters
                 
                 //Update target location
                 _agent.SetDestination(location);
+                
+                //Let's calculate the distance from us and the target.
+                float distance = (location - transform.position).magnitude;
+
+                if (distance < stats.DiveDistance)
+                {
+                    //Play roll animation
+                    _animator.SetTrigger(StaticUtilities.CaptureAnimID);
+                
+                    //Prevent future destination changes until the roll is complete.
+                    _myState = EHumanState.Rolling;
+
+                }
             }
             
             //Restarting coroutines is expensive, it uses around 200 bytes of ram.
@@ -239,8 +259,9 @@ namespace Characters
         
         private void RemoveDetection(float amount)
         {
+            if (_myState == EHumanState.Rolling) return;
+            
             _currentDetection = Mathf.Max(_currentDetection - amount, 0);
-            //print($"Removing detection, {_currentDetection} = {_currentDetection} - {amount}");
 
             float detectPerc = _currentDetection / stats.MaxDetection;
             _detectionBarMat.SetFloat(StaticUtilities.FillMatID, detectPerc);

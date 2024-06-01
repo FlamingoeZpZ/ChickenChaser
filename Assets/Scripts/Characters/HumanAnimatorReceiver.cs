@@ -1,7 +1,6 @@
 using System;
-using AI;
+using Game;
 using Managers;
-using ScriptableObjects;
 using UnityEngine;
 using Utilities;
 using Random = UnityEngine.Random;
@@ -10,7 +9,11 @@ namespace Characters
 {
     public class HumanAnimatorReceiver : MonoBehaviour
     {
+        [SerializeField] private CaptureZone zone;
+
         private AudioSource _source;
+       
+        
         private void Awake()
         {
             _source = GetComponent<AudioSource>();
@@ -33,6 +36,25 @@ namespace Characters
             _source.PlayOneShot(set.clip, set.volume);
             //Human steps SHOULD NOT be detectable by other humans
             //AudioDetection.onSoundPlayed.Invoke(pos, set.volume, set.rangeMultiplier, EAudioLayer.Human);
+        }
+
+        private void EnableCaptureZone()
+        {
+            print("Capture Zone Enabled");
+            zone.enabled = true;
+        }
+
+        private void DisableCaptureZone()
+        {
+            print("Capture Zone Disabled");
+            zone.enabled = false;
+        }
+
+
+        private void ThrowCapturedObject()
+        {
+            print("Throwing Object");
+            zone.ThrowCaptureObject();
         }
 
         private void OnDrawGizmosSelected()

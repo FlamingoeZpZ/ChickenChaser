@@ -492,8 +492,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.26745582
-        functionName: CheckCatch
+      - time: 0.21056817
+        functionName: EnableCaptureZone
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.5004798
+        functionName: DisableCaptureZone
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

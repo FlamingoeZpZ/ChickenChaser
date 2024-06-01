@@ -17,6 +17,7 @@ namespace ScriptableObjects
     [SerializeField, Min(0)] private float chaseMoveSpeed = 4;
     [SerializeField, Min(0)] private float minIdleTime = 1;
     [SerializeField, Min(0)] private float maxIdleTime = 3;
+    [SerializeField, Min(0)] private float diveDistance = 1;
     [SerializeField] private EDetectionType ignoreWhileChasing;
 
     [Header("Audio")]
@@ -49,9 +50,6 @@ namespace ScriptableObjects
   
     public float MinIdleTime => minIdleTime;
     public float MaxIdleTime => maxIdleTime;
-  
-
-
-    
+    public float DiveDistance => diveDistance;
   }
 }

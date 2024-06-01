@@ -37,6 +37,9 @@ namespace Managers
         {
             DisablePlayer();
             _controls.UI.Enable();
+                        
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public static void DisableUI()
@@ -55,9 +58,7 @@ namespace Managers
             p.Move(Vector2.zero);
             p.ChangeAbilityState(false);
             p.ChangeCluckState(false);
-            
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+
         }
     }
 }

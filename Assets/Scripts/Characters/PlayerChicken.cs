@@ -44,10 +44,8 @@ namespace Characters
             enabled = true;
             PlayerControls.DisableUI();
             cluckAbility.StopAbility();
-            
             onPlayerRescued?.Invoke();
-            
-       
+
             //Remove pop-up
             
         }
@@ -63,7 +61,7 @@ namespace Characters
             LookDirection = Vector2.zero;
             MoveDirection = transform.TransformDirection((transform.position - position).normalized);
             
-            
+            caughtCam.SetActive(false);
             
             //Tell the GameManager that we lost
             GameManager.PlayUISound(stats.OnEscape);
@@ -85,7 +83,7 @@ namespace Characters
             LookDirection = Vector2.zero;
             
             //Stop the animator
-            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, moveSpeed);
+            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, 0);
             cluckAbility.StartAbility();
             
             //Toggle Camera effects
@@ -98,6 +96,7 @@ namespace Characters
             onPlayerCaught?.Invoke(transform.position);
             GameManager.PlayUISound(stats.OnCapture);
             
+
             //Tell the UI that we lost
             
         }
@@ -107,12 +106,16 @@ namespace Characters
         {
             SettingsManager.SaveFile.onLookSenseChanged += OnLookSensChanged;
             _lookSpeed = SettingsManager.currentSettings.LookSensitivity;
+            Rb.isKinematic = false;
+            _collider.enabled = true;
         }
     
     
         private void OnDisable()
         {
             SettingsManager.SaveFile.onLookSenseChanged -= OnLookSensChanged;
+            Rb.isKinematic = true;
+            _collider.enabled = false;
         }
 
         private void OnLookSensChanged(float obj)
