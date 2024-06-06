@@ -12,13 +12,12 @@ GameObject:
   - component: {fileID: 2679957299537340986}
   - component: {fileID: 938874469784980788}
   - component: {fileID: 4338039305657928843}
-  - component: {fileID: -6769970111475968816}
   m_Layer: 0
   m_Name: NormalTree_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5203965098839918719
 Transform:
@@ -64,7 +63,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 0a698bd773487d94892cfe559ddcbf02, type: 2}
-  - {fileID: 2100000, guid: b88dfa256bc62994ea064fcb4bbad8f0, type: 2}
+  - {fileID: 2100000, guid: d5cdcc6dea5e9c840adeaa232c3ca714, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,17 +108,3 @@ CapsuleCollider:
   m_Height: 3.914625
   m_Direction: 1
   m_Center: {x: -0.07360941, y: 1.850612, z: -0.12636685}
---- !u!114 &-6769970111475968816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534594724906275768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e0eb9661dcb8ea4f8acb45586df32e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  originalRenderers:
-  - {fileID: 938874469784980788}

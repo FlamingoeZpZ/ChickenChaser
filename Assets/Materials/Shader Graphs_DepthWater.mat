@@ -40,7 +40,7 @@ Material:
     m_Floats:
     - _AbsorptionCoeff: 1
     - _Depth: 0.945
-    - _FoamAmount: 1
+    - _FoamAmount: 0.7
     - _FoamCutoff: 5.5
     - _FoamScale: 114.44
     - _FoamSpeed: 1
@@ -51,11 +51,11 @@ Material:
     - _RefractionSpeed: 0.01
     - _RefractionStrength: 0.01
     - _TrueAlpha: 0.6
-    - _WaterDepth: 1
+    - _WaterDepth: 0.72
     m_Colors:
     - _AbsorptionColor: {r: 0.3962264, g: 0.20372018, b: 0.22277848, a: 0}
     - _Base_Color: {r: 0.9764151, g: 0.99389565, b: 1, a: 0.3764706}
-    - _Deep: {r: 0.050369136, g: 0, b: 0.5283019, a: 0.5019608}
+    - _Deep: {r: 0.05036912, g: 0, b: 0.5283019, a: 0.70980394}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _Shallow: {r: 0.30660367, g: 0.826651, b: 1, a: 0.2509804}
   m_BuildTextureStacks: []
