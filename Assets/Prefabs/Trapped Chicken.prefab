@@ -130,7 +130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1559708067331910737}
   - component: {fileID: 1781603004433047657}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ChickenPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,6 +234,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4932037876118613036, guid: bbfb3b6670149fe4f94112c7d8dfe88f,
+        type: 3}
+      propertyPath: detection
+      value: 
+      objectReference: {fileID: 6377718838721002215}
+    - target: {fileID: 4932037876118613036, guid: bbfb3b6670149fe4f94112c7d8dfe88f,
+        type: 3}
+      propertyPath: regularHearing
+      value: 
+      objectReference: {fileID: 11400000, guid: bea74cc03f6df55409ece03fb1d40aba,
+        type: 2}
+    - target: {fileID: 4932037876118613036, guid: bbfb3b6670149fe4f94112c7d8dfe88f,
+        type: 3}
+      propertyPath: trappedHearing
+      value: 
+      objectReference: {fileID: 11400000, guid: f311eddf2139e5a49ab7f10851849625,
+        type: 2}
     - target: {fileID: 5662061587206153138, guid: bbfb3b6670149fe4f94112c7d8dfe88f,
         type: 3}
       propertyPath: m_Name
@@ -260,6 +277,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bbfb3b6670149fe4f94112c7d8dfe88f, type: 3}
+--- !u!114 &6377718838721002215 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 295938024690401452, guid: bbfb3b6670149fe4f94112c7d8dfe88f,
+    type: 3}
+  m_PrefabInstance: {fileID: 6672460455140391499}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cdd5c2472b89954c8079122440f973a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8138408281611051698 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3199869485871651065, guid: bbfb3b6670149fe4f94112c7d8dfe88f,

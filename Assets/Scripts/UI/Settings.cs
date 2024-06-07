@@ -58,6 +58,9 @@ namespace UI
         
             _settings.transform.GetChild(0).gameObject.SetActive(true);
         
+            //graphics.value = QualitySettings.GetQualityLevel();
+
+            
             //Apply Loaded Settings
             LookSlider.onValueChanged.AddListener(SetLookSensitivity);
             MusicSlider.onValueChanged.AddListener(SetMusicVolume);
@@ -82,14 +85,13 @@ namespace UI
             FullScreenMode x = val ? FullScreenMode.FullScreenWindow: FullScreenMode.Windowed;
             SettingsManager.currentSettings.fullScreen = x;
             Screen.fullScreenMode = x; // There is a boolean option, but this is a little bit more flexible for porting the code.
-            print("Fullscreen set");
         }
 
         private void SetGraphicsQuality(int val)
         {
+            
             SettingsManager.currentSettings.graphics = (SettingsManager.EGraphicsState)val;
             QualitySettings.SetQualityLevel(val);
-            print("SetGraphicsQuality set");
 
         }
 
@@ -102,6 +104,8 @@ namespace UI
 
         private void Rebind()
         {
+
+            
             LookSlider.SetValueWithoutNotify(SettingsManager.currentSettings.LookSensitivity);
             lookSliderText.text = SettingsManager.currentSettings.LookSensitivity.ToString("F");
         
@@ -128,7 +132,6 @@ namespace UI
         {
             SettingsManager.currentSettings.LookSensitivity = val;
             lookSliderText.text = val.ToString("F");
-            print("SetLookSensitivity set");
 
         }
 
@@ -136,7 +139,6 @@ namespace UI
         {
             SettingsManager.currentSettings.SoundVolume = val;
             soundSliderText.text = val.ToString("P0");
-            print("SetSoundVolume set");
 
         }
 
@@ -144,7 +146,6 @@ namespace UI
         {
             SettingsManager.currentSettings.MusicVolume = val;
             musicSliderText.text = val.ToString("P0");
-            print("SetMusicVolume set");
 
         }
 

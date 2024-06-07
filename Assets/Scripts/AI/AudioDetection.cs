@@ -11,14 +11,14 @@ namespace AI
     {
         [SerializeField] private Transform head;
         [SerializeField] private HearStats stats;
-        private IDetector _detector;
+        private IDetector[] _detectors;
         
         public static Action<Vector3, float, float, EAudioLayer> onSoundPlayed;
 
         
         private void Awake()
         {
-            _detector = GetComponent<IDetector>();
+            _detectors = GetComponentsInChildren<IDetector>();
         }
 
         //We want our component to be toggleable, therefore, we need to be able to turn ourselves on and off.
@@ -47,7 +47,8 @@ namespace AI
 
             float percentDistance =  1 - (distance / stats.AudioRange) * volume;
 
-            _detector.AddDetection(location, stats.AudioDetectionValue(percentDistance), EDetectionType.Audio);
+            foreach (var detector in _detectors)
+                detector.AddDetection(location, stats.AudioDetectionValue(percentDistance), EDetectionType.Audio);
         
             Debug.DrawLine(head.position,location, Color.yellow, 0.5f );
         
@@ -57,6 +58,11 @@ namespace AI
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(head.position, stats.AudioRange);
+        }
+
+        public void SetStats(HearStats hearingType)
+        {
+            stats = hearingType;
         }
     }
 }

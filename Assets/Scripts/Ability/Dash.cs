@@ -104,7 +104,12 @@ namespace Ability
             Gizmos.color = Color.yellow;
             GizmosExtras.DrawWireSphereCast(transform.position, transform.forward, dashDistance, _radius);
         }
-        
+
+        public override void ForceCancelAbility()
+        {
+            base.ForceCancelAbility();
+            feathers.Stop();
+        }
 
         protected override int AbilityTriggerID() => StaticUtilities.DashAnimID;
     }

@@ -22,7 +22,6 @@ public static class SettingsManager
             if (File.Exists(Directory))
             {
                 await using FileStream sr = File.OpenRead(Directory);
-                Debug.Log(Directory);
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(SaveFile));
                 currentSettings = (SaveFile)xmlSerializer.Deserialize(sr);
             }

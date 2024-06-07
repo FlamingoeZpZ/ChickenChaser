@@ -14,7 +14,7 @@ public class ToggleSlider : MonoBehaviour
         set
         {
             _state = value;
-            slider.value = State ? slider.maxValue : slider.minValue;
+            slider.SetValueWithoutNotify( State ? slider.maxValue : slider.minValue);
             OnValueChanged?.Invoke(_state);
         }
     }

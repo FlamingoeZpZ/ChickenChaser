@@ -15,6 +15,6 @@ MonoBehaviour:
   speed: 8
   maxSpeed: 2
   footRadius: 0.2
-  footDistance: 0.5
+  footDistance: 0.75
   onCapture: {fileID: 8300000, guid: f9e813b2a26265947bcfd7f31522f7d5, type: 3}
   onEscape: {fileID: 8300000, guid: 22156912b6088344b803bf33ba2c6174, type: 3}

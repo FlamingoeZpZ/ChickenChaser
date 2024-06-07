@@ -15,10 +15,14 @@ namespace Managers
 
            
             
+            
             _controls.Game.Ability.performed += ctx => player.ChangeAbilityState(ctx.ReadValueAsButton()); // Cooldowns
             _controls.Game.Cluck.performed += ctx => player.ChangeCluckState(ctx.ReadValueAsButton()); // Cooldowns
-            _controls.Game.Look.performed += ctx => player.Look(ctx.ReadValue<Vector2>()); // Cooldowns
-            _controls.Game.Move.performed += ctx => player.Move(ctx.ReadValue<Vector2>()); // Cooldowns
+            _controls.Game.Jump.performed += ctx => player.ChangeJumpState(ctx.ReadValueAsButton()); // Cooldowns
+
+            
+            _controls.Game.Look.performed += ctx => player.Look(ctx.ReadValue<Vector2>()); 
+            _controls.Game.Move.performed += ctx => player.Move(ctx.ReadValue<Vector2>()); 
             
             _controls.Game.EnableUI.performed += _ =>
             {
@@ -58,6 +62,7 @@ namespace Managers
             p.Move(Vector2.zero);
             p.ChangeAbilityState(false);
             p.ChangeCluckState(false);
+            p.ChangeJumpState(false);
 
         }
     }

@@ -71,6 +71,15 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""9d0b08e2-ce6a-4fcb-b227-59e9920705ad"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -166,17 +175,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""7d118d81-5b43-4a7c-8616-07703f720cf0"",
                     ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Ability"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c4181d63-424f-485b-9c31-108e0bbd08fb"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -285,17 +283,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""0400e620-9ce8-4231-8e51-4ba9159770ff"",
-                    ""path"": ""<Mouse>/middleButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Cluck"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""31297840-9a9d-4cf3-b25d-f5c6e9f777e2"",
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
@@ -324,6 +311,50 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Cluck"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0cc21cfd-9762-4f7a-92ec-82bb9cfbe3fb"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bf8d9f63-669a-46d5-bc15-9dccb746fb08"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bb20ee19-124c-474e-82e0-be1b4c9d6db9"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d7c007ef-2efe-4371-b674-19c60209ffee"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -389,6 +420,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
         m_Game_Ability = m_Game.FindAction("Ability", throwIfNotFound: true);
         m_Game_Cluck = m_Game.FindAction("Cluck", throwIfNotFound: true);
+        m_Game_Jump = m_Game.FindAction("Jump", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_DisableUI = m_UI.FindAction("DisableUI", throwIfNotFound: true);
@@ -458,6 +490,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_Look;
     private readonly InputAction m_Game_Ability;
     private readonly InputAction m_Game_Cluck;
+    private readonly InputAction m_Game_Jump;
     public struct GameActions
     {
         private @InputControls m_Wrapper;
@@ -467,6 +500,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_Game_Look;
         public InputAction @Ability => m_Wrapper.m_Game_Ability;
         public InputAction @Cluck => m_Wrapper.m_Game_Cluck;
+        public InputAction @Jump => m_Wrapper.m_Game_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -491,6 +525,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Cluck.started += instance.OnCluck;
             @Cluck.performed += instance.OnCluck;
             @Cluck.canceled += instance.OnCluck;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -510,6 +547,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Cluck.started -= instance.OnCluck;
             @Cluck.performed -= instance.OnCluck;
             @Cluck.canceled -= instance.OnCluck;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -580,6 +620,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnAbility(InputAction.CallbackContext context);
         void OnCluck(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

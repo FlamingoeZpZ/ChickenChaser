@@ -34,7 +34,7 @@ namespace Characters
         private float _detectionModifier;
         private float _previousSuggestedDelay;
         private Vector3 suggestedForward;
-
+        private float _cachedStoppingDistance;
 
         private float timeSinceLastSpoken;
 
@@ -82,7 +82,7 @@ namespace Characters
                 RemoveDetection(stats.DetectionDecayRate * Time.deltaTime);
             }
 
-            if (_myState is EHumanState.Idle or EHumanState.Looking) FaceTarget();
+            if (_myState is EHumanState.Idle or EHumanState.Looking or EHumanState.Rolling) FaceTarget();
 
 
         }
@@ -199,8 +199,13 @@ namespace Characters
 
         public void EndRoll()
         {
-            _myState = EHumanState.Looking;
+            _agent.speed = stats.ChaseMoveSpeed;
+            _myState = EHumanState.Chasing;
             RemoveDetection(40);
+            _agent.autoBraking = true;
+            _agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+            _agent.stoppingDistance = _cachedStoppingDistance;
+            _agent.SetDestination(transform.position);
         }
         
 
@@ -238,15 +243,31 @@ namespace Characters
                 _agent.SetDestination(location);
                 
                 //Let's calculate the distance from us and the target.
-                float distance = (location - transform.position).magnitude;
 
-                if (distance < stats.DiveDistance)
+                Vector3 direction = (location - transform.position);
+                
+                float distance = direction.magnitude;
+
+                if (distance <= stats.DiveDistance)
                 {
                     //Play roll animation
                     _animator.SetTrigger(StaticUtilities.CaptureAnimID);
                 
                     //Prevent future destination changes until the roll is complete.
                     _myState = EHumanState.Rolling;
+
+
+                    suggestedForward = direction;
+                    Debug.DrawLine(transform.position, transform.position + direction / distance * 8f, Color.red, 10, false);
+                    
+                     _agent.SetDestination(transform.position + direction / distance * (distance + 1));
+                     
+                     _agent.autoBraking = false;
+                     _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+                     _cachedStoppingDistance = _agent.stoppingDistance;
+                     _agent.stoppingDistance = 0;
+                     
+                    _agent.speed = stats.ChaseMoveSpeed * 4f;
 
                 }
             }

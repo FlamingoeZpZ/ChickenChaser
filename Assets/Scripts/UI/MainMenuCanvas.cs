@@ -6,6 +6,7 @@ namespace UI
     public class MainMenuCanvas : MonoBehaviour
     {
         private static MainMenuCanvas _menuCanvas;
+        [SerializeField] private GameObject quitButton;
         
         private void OnEnable()
         {
@@ -17,6 +18,9 @@ namespace UI
         private void Start()
         {
             _menuCanvas = this;
+            #if UNITY_WEBGL
+            quitButton.SetActive(false);
+            #endif
         }
 
         public void OpenSettings()
@@ -36,12 +40,17 @@ namespace UI
 
         public static void SetActive(bool b)
         {
-            _menuCanvas.gameObject.SetActive(b);
+            if(_menuCanvas) _menuCanvas.gameObject.SetActive(b);
         }
 
         public void PlaySound(AudioClip hoverSound)
         {
             GameManager.PlayUISound(hoverSound);
+        }
+
+        public void QuitGame()
+        {
+            Application.Quit();
         }
     }
 }

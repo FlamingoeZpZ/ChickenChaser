@@ -47,6 +47,7 @@ namespace AI
                     #if UNITY_EDITOR
                     Debug.DrawRay(pos, normal * distance);
                     #endif
+                    //If we fail to detect any blocking layers.
                     if (!Physics.Raycast(pos, normal, out RaycastHit _, distance, StaticUtilities.EverythingButChicken))
                     {
                         float distancePerc = 1 - (distance / stats.VisionDistance);

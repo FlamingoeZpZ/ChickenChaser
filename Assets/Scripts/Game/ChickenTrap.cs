@@ -1,3 +1,4 @@
+using System;
 using Characters;
 using UnityEngine;
 using Utilities;
@@ -28,13 +29,21 @@ namespace Game
         {
             //When the chicken is freed, its triggering this again, and freeing itself twice because OnTriggerStay runs on the physics ticks
             if (!_chicken  || !other.attachedRigidbody.TryGetComponent(out Chicken c) || !c.isActiveAndEnabled || _isOpened) return;
-            _currentDecayTime += Time.deltaTime;
+            _currentDecayTime += Time.deltaTime * 2;
             _myMaterial.SetFloat(StaticUtilities.FillMatID, _currentDecayTime / decayTime);
             if (_currentDecayTime >= decayTime)
             {
                 _isOpened = true;
                 FreeChicken();
             }
+        }
+
+        private void LateUpdate()
+        {
+            if(_isOpened || _currentDecayTime <= 0) return;
+            _currentDecayTime -= Time.deltaTime;
+            if (_currentDecayTime <= 0) _currentDecayTime = 0;
+            _myMaterial.SetFloat(StaticUtilities.FillMatID, _currentDecayTime / decayTime);
         }
 
         private void FreeChicken()

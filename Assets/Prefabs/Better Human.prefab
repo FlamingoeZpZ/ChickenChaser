@@ -2337,7 +2337,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.8
-  m_BaseOffset: -0.15
+  m_BaseOffset: -0.025
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &6774229384372455228
@@ -3193,7 +3193,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.625
   m_Center: {x: 0, y: 0.27, z: 0}
 --- !u!1 &7376420410330480598
 GameObject:

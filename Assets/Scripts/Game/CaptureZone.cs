@@ -1,5 +1,6 @@
 using Characters;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Utilities;
 
@@ -35,8 +36,7 @@ namespace Game
                 //And attach it to our grapple point
                 _caught.transform.SetParent(chickenPoint, true);
                 _caught.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                _caught.Move(Vector2.zero);
-                _caught.Look(Vector2.zero);
+
                     
                 //We then need to play the throw chicken animation
                 _animator.SetTrigger(StaticUtilities.BeginCaptureAnimID);
@@ -64,8 +64,10 @@ namespace Game
         {
             //Imagine throwing a pokeball, we need to give full responsibility to the thrower object.
             //You could change this code so that you use an interface, ICapturable and in theory catch anything.
-            Instantiate(throwObject, chickenPoint.position, Quaternion.identity).Initialize(transform.forward * throwForce, _caught);
-
+            
+            var trap = Instantiate(throwObject, chickenPoint.position, Quaternion.identity);
+            SceneManager.MoveGameObjectToScene(trap.gameObject, SceneManager.GetSceneByBuildIndex(2));
+            trap .Initialize(transform.forward * throwForce, _caught);
 
         }
     }

@@ -37,6 +37,7 @@ namespace Characters
         
         private float _visibility = 1;
 
+        private Vector3 slopeNormal;
         //private static Transform _myTransform;
         //public static Vector3 PlayerPosition => _myTransform.position;
 
@@ -53,8 +54,6 @@ namespace Characters
             
             ChickenAnimatorReceiver car = transform.GetChild(0).GetComponent<ChickenAnimatorReceiver>();
             car.OnLandEffect += LandEffect;
-            
-            Rb.maxLinearVelocity = stats.MaxSpeed;
         }
 
 
@@ -68,7 +67,7 @@ namespace Characters
         {
             //We're going to spherecast downwards, and detect if we've hit the floor.
             //Basic Spherecast check
-            bool newGroundedState = Physics.SphereCast(footTransform.position, stats.FootRadius, Vector3.down, out RaycastHit _, stats.FootDistance,
+            bool newGroundedState = Physics.SphereCast(footTransform.position, stats.FootRadius, Vector3.down, out RaycastHit slope, stats.FootDistance,
                 StaticUtilities.GroundLayers);
             if (newGroundedState != IsGrounded)
             {
@@ -80,18 +79,37 @@ namespace Characters
                 {
                     LandEffect(Mathf.Max(_fallTime / 2, 3));
                     _fallTime = 0;
+                    
                 }
+
+                
             }
 
             if (!IsGrounded) _fallTime += Time.deltaTime;
+            else slopeNormal = slope.normal;
         }
 
         protected virtual void HandleMovement()
         {
-            Rb.AddForce(transform.rotation * MoveDirection * stats.Speed);
-
-            moveSpeed = Rb.velocity.magnitude;
+            Vector3 direction = MoveDirection;
+            if (IsGrounded)
+            {
+                direction = Vector3.ProjectOnPlane(MoveDirection, slopeNormal);
+            }
             
+            Rb.AddForce(transform.rotation * direction * stats.Speed, ForceMode.Acceleration);
+
+            Vector2 horizontalVelocity = new Vector2(Rb.velocity.x, Rb.velocity.z);
+            moveSpeed = horizontalVelocity.magnitude;
+
+            if (moveSpeed > stats.MaxSpeed)
+            {
+                horizontalVelocity = horizontalVelocity.normalized * stats.MaxSpeed;
+                Rb.velocity = new Vector3(horizontalVelocity.x, Rb.velocity.y, horizontalVelocity.y);
+                moveSpeed = stats.MaxSpeed;
+            }
+
+
             Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, moveSpeed);
         }
 

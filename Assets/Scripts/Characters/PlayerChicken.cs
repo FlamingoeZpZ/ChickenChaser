@@ -3,6 +3,7 @@ using Ability;
 using Managers;
 using UI;
 using UnityEngine;
+using UnityEngine.AI;
 using Utilities;
 
 namespace Characters
@@ -18,9 +19,11 @@ namespace Characters
         [SerializeField] private GameObject caughtCam;
         [SerializeField] private AbilityBase abilityBaseController;
         [SerializeField] private AbilityBase cluckAbility;
+        [SerializeField] private AbilityBase jumpAbility;
         
         public AbilityBase Ability => abilityBaseController;
         public AbilityBase Cluck => cluckAbility;
+        public AbilityBase JumpAbility => jumpAbility;
 
         public static Action<Vector3> onPlayerCaught;
         public static Action<Vector3> onPlayerEscaped;
@@ -43,11 +46,11 @@ namespace Characters
             
             enabled = true;
             PlayerControls.DisableUI();
-            cluckAbility.StopAbility();
             onPlayerRescued?.Invoke();
+            caughtCam.SetActive(false);
 
             //Remove pop-up
-            
+            cluckAbility.StopAbility();
         }
 
         public override void EscapeAndMoveTo(Vector3 position)
@@ -59,7 +62,9 @@ namespace Characters
             
             //Stop movement
             LookDirection = Vector2.zero;
-            MoveDirection = transform.TransformDirection((transform.position - position).normalized);
+            NavMeshAgent agent = GetComponent<NavMeshAgent>();
+                agent.enabled = true;
+                agent.SetDestination(position);
             
             caughtCam.SetActive(false);
             
@@ -74,13 +79,6 @@ namespace Characters
         public override void CaptureChicken()
         {
             print("Player LOST game");
-            
-            //Stop Inputs
-            PlayerControls.DisablePlayer();
-            
-            //Stop movement
-            MoveDirection = Vector3.zero;
-            LookDirection = Vector2.zero;
             
             //Stop the animator
             Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, 0);
@@ -98,7 +96,8 @@ namespace Characters
             
 
             //Tell the UI that we lost
-            
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
         }
 
 
@@ -116,6 +115,16 @@ namespace Characters
             SettingsManager.SaveFile.onLookSenseChanged -= OnLookSensChanged;
             Rb.isKinematic = true;
             _collider.enabled = false;
+            
+            PlayerControls.DisablePlayer();
+
+            abilityBaseController.ForceCancelAbility();
+            cluckAbility.ForceCancelAbility();
+            jumpAbility.ForceCancelAbility();
+            
+            Move(Vector2.zero);
+            Look(Vector2.zero);
+            
         }
 
         private void OnLookSensChanged(float obj)
@@ -142,6 +151,12 @@ namespace Characters
         {
             if (state) cluckAbility.StartAbility();
             else cluckAbility.StopAbility();
+        }
+        
+        public void ChangeJumpState(bool state)
+        {
+            if (state) jumpAbility.StartAbility();
+            else jumpAbility.StopAbility();
         }
 
     

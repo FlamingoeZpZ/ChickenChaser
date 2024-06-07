@@ -29,7 +29,7 @@ namespace Ability
         public override bool CanActivate()
         {
             //Must be moving, or barely.
-            return Owner.MoveSpeed < 0.2f && base.CanActivate();
+            return Owner.MoveSpeed < 1.0f && base.CanActivate();
         }
 
         protected override int AbilityTriggerID() => StaticUtilities.JumpAnimID;

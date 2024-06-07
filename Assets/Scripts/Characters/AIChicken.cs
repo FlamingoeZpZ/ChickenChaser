@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using AI;
 using Interfaces;
 using Managers;
+using ScriptableObjects;
 using UI;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,6 +13,9 @@ namespace Characters
     public class AIChicken : Chicken, IDetector
     {
         [SerializeField] private FaceTarget faceTarget;
+        [SerializeField] private AudioDetection detection;
+        [SerializeField] private HearStats trappedHearing;
+        [SerializeField] private HearStats regularHearing;
         private NavMeshAgent _agent;
         
 
@@ -39,12 +42,13 @@ namespace Characters
         {
             Animator.SetBool(StaticUtilities.CluckAnimID, true);
             faceTarget.enabled = false;
-            Rb.isKinematic = false;
+            //Rb.isKinematic = false;
             PlayerChicken.onPlayerCaught += MoveToPlayer;
             PlayerChicken.onPlayerEscaped += MoveToPlayer;
             ++NumActiveAIChickens;
             _agent.enabled = true;
             _collider.enabled = true;
+            detection.SetStats(regularHearing);
         }
 
         private void OnDisable()
@@ -55,12 +59,19 @@ namespace Characters
             StopAllCoroutines();
             PlayerChicken.onPlayerCaught -= MoveToPlayer;
             PlayerChicken.onPlayerEscaped -= MoveToPlayer;
-            Rb.isKinematic = true;
+            //Rb.isKinematic = true;
             --NumActiveAIChickens;
             //Cancel all previous instructions
             _agent.ResetPath();
             _agent.enabled = false;
             _collider.enabled = false;
+            detection.SetStats(trappedHearing);
+
+            
+            
+            
+            Move(Vector2.zero);
+            Look(Vector2.zero);
         }
 
         //Without the player, let's just rush towards the player... If we get caught, oh well.
@@ -79,6 +90,7 @@ namespace Characters
         public override void ReleaseChicken()
         {
             enabled = true;
+            Animator.enabled = true;
             HudManager.Instance.OnChickenRescued();
         }
 
@@ -98,7 +110,7 @@ namespace Characters
         private IEnumerator CheckForEscaped()
         {
             //CACHED Move until we reach the target
-            WaitUntil target = new WaitUntil(() => _agent.remainingDistance <= _agent.stoppingDistance);
+            WaitUntil target = new WaitUntil(() => _agent.hasPath && _agent.remainingDistance <= _agent.stoppingDistance);
 
             //Use cached variable
             yield return target;
@@ -120,15 +132,17 @@ namespace Characters
         public override void CaptureChicken()
         {
             enabled = false;
+            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, 0);
+            Animator.enabled = false;
             HudManager.Instance.OnChickenCaptured();
             GameManager.PlayUISound(stats.OnCapture);
-
+    
 
         }
 
         public void AddDetection(Vector3 location, float detection, EDetectionType type)
         {
-            if (!enabled) return;
+            if (!enabled || detection < 1) return;
             print("I'm moving towards: " + location);
             _agent.SetDestination(location);
             Animator.SetBool(StaticUtilities.CluckAnimID, false);

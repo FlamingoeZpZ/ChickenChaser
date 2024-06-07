@@ -48,7 +48,7 @@ public class ChickenTrapLander : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _rb.velocity = velocity * SpawnSpeed;
         _caught = getChild;
-       
+        //Prevent sillies
         //FAIL SAFE, expect the object  we're expecting to cage will now just exist disabled forever.
         StartCoroutine(Emergency());
 

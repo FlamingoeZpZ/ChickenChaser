@@ -225,10 +225,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3199869485871651065}
+  - component: {fileID: 1957206060956288738}
+  - component: {fileID: 2422084093704212099}
   - component: {fileID: 785069991315708746}
   - component: {fileID: 7346056962328945837}
-  - component: {fileID: 2422084093704212099}
-  - component: {fileID: 1957206060956288738}
+  - component: {fileID: 6920031892962024318}
+  - component: {fileID: 4655674357225318760}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -259,6 +261,55 @@ Transform:
   - {fileID: 674456156551999235}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1957206060956288738
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662061587206153138}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 1
+--- !u!114 &2422084093704212099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662061587206153138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a65e5e48a7562b54792e86b70266be2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats: {fileID: 11400000, guid: 58fbae7c8c1a43d4d894d164104ab5a7, type: 2}
+  head: {fileID: 2734304907029226763}
+  footTransform: {fileID: 821473674308985966}
+  landEffect: {fileID: 3095555676156603147}
+  pitchLimit: 30
+  yawLimit: 180
+  caughtCam: {fileID: 3576921349209581253}
+  abilityBaseController: {fileID: 785069991315708746}
+  cluckAbility: {fileID: 7346056962328945837}
+  jumpAbility: {fileID: 6920031892962024318}
 --- !u!114 &785069991315708746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,7 +345,7 @@ MonoBehaviour:
   canBeHeld: 1
   cluckParticle: {fileID: 7431843189057215469}
   cluckSound: {fileID: 8300000, guid: 0dbc98a20c25b0d47af6e7b72af59db6, type: 3}
---- !u!114 &2422084093704212099
+--- !u!114 &6920031892962024318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -303,45 +354,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 5662061587206153138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a65e5e48a7562b54792e86b70266be2b, type: 3}
+  m_Script: {fileID: 11500000, guid: 068e5c5c0aa7cf94a9491d1f3f129aa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 58fbae7c8c1a43d4d894d164104ab5a7, type: 2}
-  head: {fileID: 2734304907029226763}
-  footTransform: {fileID: 821473674308985966}
-  landEffect: {fileID: 3095555676156603147}
-  pitchLimit: 30
-  yawLimit: 180
-  caughtCam: {fileID: 3576921349209581253}
-  abilityBaseController: {fileID: 785069991315708746}
-  cluckAbility: {fileID: 7346056962328945837}
---- !u!54 &1957206060956288738
-Rigidbody:
+  icon: {fileID: 21300000, guid: a47bf4bfcd00d7e46a27a3f5e4452ae0, type: 3}
+  cooldown: 5
+  canBeHeld: 0
+  jumpForce: 3
+--- !u!195 &4655674357225318760
+NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5662061587206153138}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 1
+  m_Enabled: 0
+  m_AgentTypeID: -1372625422
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &7614189549562849470
 GameObject:
   m_ObjectHideFlags: 0

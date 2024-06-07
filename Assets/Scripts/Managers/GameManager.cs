@@ -57,7 +57,6 @@ namespace Managers
 
         private void Awake()
         {
-            print("GM A");
             if (Instance && Instance != this)
             {
                 Destroy(Instance.gameObject);
@@ -65,7 +64,6 @@ namespace Managers
             }
             DontDestroyOnLoad(gameObject);
             Instance = this;
-            print("GM B");
 
             _transition = canvas.transform.GetChild(0).GetComponent<Image>().material;
             _textBlocks = canvas.transform.GetChild(0).GetChild(0).gameObject;
@@ -73,7 +71,6 @@ namespace Managers
             source.time = StartTime;
             
             
-            print("GM C");
 
             SettingsManager.SaveFile.onMusicVolumeChanged += x =>
             {
@@ -85,9 +82,7 @@ namespace Managers
             {
                 SoundsDictionary.Add(set.tag, set);
             }
-            print("GM D");
 
-            print(SceneManager.loadedSceneCount);
             toMainMenu.gameObject.SetActive(false);
             quitGame.gameObject.SetActive(false);
             //Because the first scene counts as nothing :)
@@ -101,7 +96,6 @@ namespace Managers
             quitGame.gameObject.SetActive(true);
             #endif
             #endif
-            print("GM E");
 
         }
 
@@ -113,7 +107,6 @@ namespace Managers
 
         private IEnumerator LoadGameImpl()
         {
-            yield break;
             _inGame = true;
             NumChickens = 0;
             NumChickensSaved = 0;
@@ -128,15 +121,14 @@ namespace Managers
             SceneManager.UnloadSceneAsync(1).completed += _ =>
                 //Additively load the main menu
                 SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive).completed += _ =>
+                {
                     StartCoroutine(ReadyGame(currentTime));
-            
+                };
+
         }
 
         private IEnumerator ReadyGame(DateTime startTime)
         {
-            yield break;
-
-            print("Readying Game");
             var timeSpan = DateTime.Now.Subtract(startTime);
             float s = intendedDelay-timeSpan.Seconds;
             if (s > 0) yield return new WaitForSeconds(s);

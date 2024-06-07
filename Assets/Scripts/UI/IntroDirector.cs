@@ -16,7 +16,6 @@ public class IntroDirector : MonoBehaviour
 
     private IEnumerator PlayAnimation()
     {
-        print("Beginning clip");
         _director.Play();
         double needed = _director.duration;
         double actual = 0;
@@ -34,7 +33,6 @@ public class IntroDirector : MonoBehaviour
             yield return null;
         }
         _director.time = needed;
-        print("Ending clip");
         _director.Stop();
     }
 }

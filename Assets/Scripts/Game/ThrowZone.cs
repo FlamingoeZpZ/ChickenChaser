@@ -1,6 +1,7 @@
 using System;
 using Characters;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utilities;
 
 /// <summary>
@@ -14,7 +15,7 @@ public class ThrowZone : MonoBehaviour
 
     private const float MinSpeed = 0.1f;
 
-    private const float SpawnRadiusCheck = 0.5f;
+    private const float SpawnRadiusCheck = 0.4f;
     private const float SpawnHeight = 15;
     private Rigidbody _rb;
     private Chicken _caught;
@@ -34,7 +35,7 @@ public class ThrowZone : MonoBehaviour
             Vector3 velocity = Vector3.down;
             if (Physics.SphereCast(transform.position, SpawnRadiusCheck, Vector3.up, out RaycastHit hit, SpawnHeight))
             {
-                startPoint = transform.position + Vector3.up * hit.distance;
+                startPoint = transform.position + Vector3.up * (hit.distance - SpawnRadiusCheck * 2);
                 velocity *= hit.distance;
             }
             else
@@ -47,7 +48,7 @@ public class ThrowZone : MonoBehaviour
 
             //Spawn in a cage object directly above us
             ChickenTrapLander trap = Instantiate(trapPrefab, startPoint, Quaternion.identity);
-
+            SceneManager.MoveGameObjectToScene(trap.gameObject, SceneManager.GetSceneByBuildIndex(2));
             trap.Initialize(velocity, _caught);
             
             //Leave our child parentless temporarily.

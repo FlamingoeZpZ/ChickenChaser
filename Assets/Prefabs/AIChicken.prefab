@@ -116,6 +116,9 @@ MonoBehaviour:
   footTransform: {fileID: 821473674308985966}
   landEffect: {fileID: 3095555676156603147}
   faceTarget: {fileID: 7789267574510289417}
+  detection: {fileID: 0}
+  trappedHearing: {fileID: 0}
+  regularHearing: {fileID: 0}
 --- !u!195 &1449428557594908429
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -164,7 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 2734304907029226763}
-  stats: {fileID: 11400000, guid: bea74cc03f6df55409ece03fb1d40aba, type: 2}
+  stats: {fileID: 11400000, guid: f311eddf2139e5a49ab7f10851849625, type: 2}
 --- !u!1 &8273480113772969671
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,7 +30,7 @@ namespace Characters
             if (!Physics.SphereCast(pos, 0.4f, Vector3.down, out RaycastHit hit, 1.4f,StaticUtilities.GroundLayers)) return;
             
             //Make sure the layer is not null
-            if (!GameManager.SoundsDictionary.TryGetValue(hit.transform.tag, out AudioVolumeRangeSet set)) return;
+            if (!GameManager.SoundsDictionary.TryGetValue(hit.transform.tag, out AudioVolumeRangeSet set) || !_source) return;
             _source.pitch = Random.Range(0.8f, 1.2f);
             //Play the desired audio + detection
             _source.PlayOneShot(set.clip, set.volume);
@@ -55,6 +55,8 @@ namespace Characters
         {
             print("Throwing Object");
             zone.ThrowCaptureObject();
+            zone.enabled = false;
+
         }
 
         private void OnDrawGizmosSelected()

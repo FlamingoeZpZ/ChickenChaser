@@ -86,5 +86,13 @@ namespace Ability
         {
             return _currentCooldownTime / cooldown;
         }
+
+        public virtual void ForceCancelAbility()
+        {
+            _currentCooldownTime = cooldown;
+            _isReady = true;
+            StopAllCoroutines();
+            StopAbility();
+        }
     }
 }

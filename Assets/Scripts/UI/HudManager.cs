@@ -21,6 +21,7 @@ namespace UI
         [Header("Interactables")]
         [SerializeField] private AbilityUIBind abilityA;
         [SerializeField] private AbilityUIBind abilityB;
+        [SerializeField] private AbilityUIBind abilityC;
         
         //We want these variables to exist in the Unity editor so we can customize, but not to exist in builds that don't need them.
 #if (!UNITY_STANDALONE && !UNITY_WEBGL) || UNITY_EDITOR
@@ -183,6 +184,7 @@ namespace UI
             //Bind abilities
             abilityA.SetTargetAbility(player.Ability);
             abilityB.SetTargetAbility(player.Cluck);
+            abilityC.SetTargetAbility(player.JumpAbility);
         }
 
         
