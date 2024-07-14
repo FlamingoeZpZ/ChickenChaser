@@ -76,13 +76,26 @@ namespace Characters
         private void Update()
         {
             _animator.SetFloat(StaticUtilities.MoveSpeedAnimID, _agent.velocity.magnitude);
+
+            float dt = Time.deltaTime;
             
             if (_isDetectionDecaying)
             {
-                RemoveDetection(stats.DetectionDecayRate * Time.deltaTime);
+                RemoveDetection(stats.DetectionDecayRate * dt);
             }
 
             if (_myState is EHumanState.Idle or EHumanState.Looking or EHumanState.Rolling) FaceTarget();
+            if (_myState is EHumanState.Rolling)
+            {
+                if (!Physics.Raycast(transform.position + Vector3.up, suggestedForward, 1, StaticUtilities.GroundLayers))
+                {
+                    if (Physics.Raycast(transform.position, Vector3.down, out var ground, 1, StaticUtilities.GroundLayers))
+                    { 
+                        //Would be best not to do this here...
+                        transform.Translate(Vector3.ProjectOnPlane(suggestedForward, ground.normal) * (stats.RollSpeed * dt), Space.World);
+                    }
+                }
+            }
 
 
         }
@@ -160,6 +173,9 @@ namespace Characters
             while(_currentDetection > 0f)
             {
                 yield return TimerDelay;
+                Debug.Log("PRV: " + suggestedForward);
+                suggestedForward = Quaternion.Euler(0,Random.Range(-stats.LookRotationAngle, stats.LookRotationAngle), 0) * suggestedForward;
+                Debug.Log("FWD: " + suggestedForward);
             }
             
             //Reverse
@@ -199,13 +215,19 @@ namespace Characters
 
         public void EndRoll()
         {
-            _agent.speed = stats.ChaseMoveSpeed;
             _myState = EHumanState.Chasing;
+            _agent.isStopped = false;
             RemoveDetection(40);
+            
+            /*
+            _agent.speed = stats.ChaseMoveSpeed;
             _agent.autoBraking = true;
             _agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
             _agent.stoppingDistance = _cachedStoppingDistance;
             _agent.SetDestination(transform.position);
+            */
+            
+            Debug.DrawRay(transform.position, Vector3.up * 5, Color.red, 5);
         }
         
 
@@ -247,27 +269,32 @@ namespace Characters
                 Vector3 direction = (location - transform.position);
                 
                 float distance = direction.magnitude;
-
-                if (distance <= stats.DiveDistance)
+                
+                if (distance <= stats.DiveDistance && Vector3.Dot(transform.forward,direction) > 0.5)
                 {
                     //Play roll animation
                     _animator.SetTrigger(StaticUtilities.CaptureAnimID);
                 
                     //Prevent future destination changes until the roll is complete.
                     _myState = EHumanState.Rolling;
-
-
-                    suggestedForward = direction;
-                    Debug.DrawLine(transform.position, transform.position + direction / distance * 8f, Color.red, 10, false);
                     
+                    
+                    suggestedForward = direction / distance;
+                    Debug.DrawLine(transform.position, transform.position + direction / distance * 8f, Color.yellow, 10, false);
+                    _agent.isStopped = true;
+                    StopCoroutine(_currentRoutine);
+                    /*
                      _agent.SetDestination(transform.position + direction / distance * (distance + 1));
+                     
+                     Debug.DrawRay(transform.position + direction / distance * (distance + 1), Vector3.up * 5, Color.yellow, 5, false);
                      
                      _agent.autoBraking = false;
                      _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
                      _cachedStoppingDistance = _agent.stoppingDistance;
                      _agent.stoppingDistance = 0;
                      
-                    _agent.speed = stats.ChaseMoveSpeed * 4f;
+                    _agent.speed = stats.ChaseMoveSpeed * 100f;
+                    */
 
                 }
             }

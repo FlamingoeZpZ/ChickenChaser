@@ -119,6 +119,7 @@ namespace UI
             uISliderText.text = SettingsManager.currentSettings.UIScale.ToString("P0");
         
             graphics.SetValueWithoutNotify(QualitySettings.GetQualityLevel());
+            graphics.RefreshShownValue();
             fullScreen.State = SettingsManager.currentSettings.fullScreen == FullScreenMode.FullScreenWindow;
 
         }

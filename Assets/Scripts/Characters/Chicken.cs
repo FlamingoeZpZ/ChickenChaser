@@ -99,13 +99,13 @@ namespace Characters
             
             Rb.AddForce(transform.rotation * direction * stats.Speed, ForceMode.Acceleration);
 
-            Vector2 horizontalVelocity = new Vector2(Rb.velocity.x, Rb.velocity.z);
+            Vector2 horizontalVelocity = new Vector2(Rb.linearVelocity.x, Rb.linearVelocity.z);
             moveSpeed = horizontalVelocity.magnitude;
 
             if (moveSpeed > stats.MaxSpeed)
             {
                 horizontalVelocity = horizontalVelocity.normalized * stats.MaxSpeed;
-                Rb.velocity = new Vector3(horizontalVelocity.x, Rb.velocity.y, horizontalVelocity.y);
+                Rb.linearVelocity = new Vector3(horizontalVelocity.x, Rb.linearVelocity.y, horizontalVelocity.y);
                 moveSpeed = stats.MaxSpeed;
             }
 

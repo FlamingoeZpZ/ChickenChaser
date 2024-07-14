@@ -25,7 +25,7 @@ public class ThrowZone : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float speed = _rb.velocity.sqrMagnitude;
+        float speed = _rb.linearVelocity.sqrMagnitude;
         //If we reach this point, we have achieved our goal
         lifeTime += Time.fixedDeltaTime;
         if (lifeTime > 0.5f && speed < MinSpeed)
@@ -72,7 +72,7 @@ public class ThrowZone : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         
   
-        _rb.velocity = force;
+        _rb.linearVelocity = force;
     }
     private void OnDrawGizmosSelected()
     {

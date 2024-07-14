@@ -42,7 +42,10 @@ namespace Utilities
 
 
         public static readonly int FillMatID = Shader.PropertyToID("_Fill");
-        
+
+        private static float volume;
+
+        private static float t = 0;
         //The "this" keyword will allow us to say source.TransitionSound anywhere.
         /// <summary>
         /// This is a coroutine function that transitions audio. It is not async because web support
@@ -53,15 +56,24 @@ namespace Utilities
         /// <returns></returns>
         public static IEnumerator TransitionSound(this AudioSource source, AudioClip nextClip, float duration)
         {
-            float curTime = 0;
-            float volume = source.volume;
-            bool hasChanged = false;
-            while (curTime < duration)
+            //If we're not active
+            if (t == 0)
             {
-                curTime += Time.deltaTime;
-                float percent = curTime / duration;
+                //use the volume of the source... But if we were already active, use the cached value...
+                //ISSUE: both t and volume exist only once and therefore Transition sound onkly can work for one thing at a time.
+                volume = source.volume;
+            }
+            
+            bool hasChanged = false;
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+                float percent = t / duration;
                 
                 //Make a parabolic function, in which when percent is 0, currentVolume is volume, and when percent is 0.5, volume is 0, and when percent is currentVolume is volume
+                //x = 0, y = volume
+                //x = 0.5, y = 0
+                //x = 1, y = volume
                 var currentVolume = 4 * volume * (percent - 0.5f) * (percent - 0.5f);
 
                 if (!hasChanged && percent > 0.5f)
@@ -74,6 +86,8 @@ namespace Utilities
 
                 yield return null;
             }
+
+            t = 0;
             source.volume = volume;
         }
     }

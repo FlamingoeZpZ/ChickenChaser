@@ -8,22 +8,24 @@ namespace Managers
     {
         private static InputControls _controls;
         private static PlayerChicken p;
+        
+        // Initialize the controls
         public static void Init(PlayerChicken player)
         {
+            //Remember our player
             p = player;
             _controls = new InputControls();
+            
+            //Managed Abilities
+            _controls.Game.Ability.performed += ctx => player.ChangeAbilityState(ctx.ReadValueAsButton()); 
+            _controls.Game.Cluck.performed += ctx => player.ChangeCluckState(ctx.ReadValueAsButton());
+            _controls.Game.Jump.performed += ctx => player.ChangeJumpState(ctx.ReadValueAsButton()); 
 
-           
-            
-            
-            _controls.Game.Ability.performed += ctx => player.ChangeAbilityState(ctx.ReadValueAsButton()); // Cooldowns
-            _controls.Game.Cluck.performed += ctx => player.ChangeCluckState(ctx.ReadValueAsButton()); // Cooldowns
-            _controls.Game.Jump.performed += ctx => player.ChangeJumpState(ctx.ReadValueAsButton()); // Cooldowns
-
-            
+            //Bind other player actions
             _controls.Game.Look.performed += ctx => player.Look(ctx.ReadValue<Vector2>()); 
             _controls.Game.Move.performed += ctx => player.Move(ctx.ReadValue<Vector2>()); 
             
+            //Controls for toggling UI
             _controls.Game.EnableUI.performed += _ =>
             {
                 Settings.OpenSettings(false);

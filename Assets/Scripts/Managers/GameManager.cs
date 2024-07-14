@@ -221,10 +221,12 @@ namespace Managers
             _transition.SetFloat(StaticUtilities.FillMatID, curve.Evaluate(1));
         }
 
-
+        private static Coroutine transition;
         public static void TransitionGameMusic(bool isChasing, float duration)
         {
-            Instance.StartCoroutine(Instance.source.TransitionSound(isChasing?Instance.chaseMusic:Instance.stealthMusic,duration));
+            //IF we're getting this message, but we're currently transition there's a problem and we'll lose track of the audiosource's volume or both will transition concurrently
+            if(transition != null) Instance.StopCoroutine(transition);
+            transition = Instance.StartCoroutine(Instance.source.TransitionSound(isChasing?Instance.chaseMusic:Instance.stealthMusic,duration));
         }
 
 

@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: Human
   m_EditorClassIdentifier: 
   maxDetection: 100
-  detectionDecayRate: 5
-  beginDecayCooldown: 3
+  detectionDecayRate: 10
+  beginDecayCooldown: 2
   lookingStateDetectionModifier: 2
   idleStateDetectionModifier: 1
   baseMoveSpeed: 2
   chaseMoveSpeed: 4
+  rollSpeed: 6
+  lookRotationAngle: 20
   minIdleTime: 1
   maxIdleTime: 3
   diveDistance: 3

@@ -1,15 +1,15 @@
 using Characters;
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class WinEffects : MonoBehaviour
 {
 
-    private CinemachineVirtualCamera _cam;
+    private CinemachineCamera _cam;
 
     private void Awake()
     {
-        _cam = GetComponent<CinemachineVirtualCamera>();
+        _cam = GetComponent<CinemachineCamera>();
     }
 
     void OnEnable()
