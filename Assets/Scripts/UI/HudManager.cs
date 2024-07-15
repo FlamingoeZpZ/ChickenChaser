@@ -236,7 +236,7 @@ namespace UI
             #endif
             _owner.Move(stick.Direction != Vector2.zero ? Vector2.up : Vector2.zero);
             //For looking, we should check to see if the magnitude is some really small number, if it is, we should actually just ignore it.
-            Vector2 value = new Vector2(stick.Direction.x, Mathf.Abs(stick.Direction.y) > stickDeadZoneY?stick.Direction.y: 0);
+            Vector2 value = new Vector2(stick.Direction.x, Mathf.Abs(stick.Direction.y) > stickDeadZoneY?stick.Direction.y/((float)Screen.currentResolution.width/Screen.currentResolution.height): 0);
             _owner.Look(Vector2.Scale(value ,_displayScale));
         }
         
