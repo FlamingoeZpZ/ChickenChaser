@@ -65,7 +65,9 @@ namespace Managers
             p.ChangeAbilityState(false);
             p.ChangeCluckState(false);
             p.ChangeJumpState(false);
-
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }

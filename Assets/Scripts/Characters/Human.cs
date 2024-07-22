@@ -173,9 +173,7 @@ namespace Characters
             while(_currentDetection > 0f)
             {
                 yield return TimerDelay;
-                Debug.Log("PRV: " + suggestedForward);
                 suggestedForward = Quaternion.Euler(0,Random.Range(-stats.LookRotationAngle, stats.LookRotationAngle), 0) * suggestedForward;
-                Debug.Log("FWD: " + suggestedForward);
             }
             
             //Reverse
@@ -218,16 +216,6 @@ namespace Characters
             _myState = EHumanState.Chasing;
             _agent.isStopped = false;
             RemoveDetection(40);
-            
-            /*
-            _agent.speed = stats.ChaseMoveSpeed;
-            _agent.autoBraking = true;
-            _agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
-            _agent.stoppingDistance = _cachedStoppingDistance;
-            _agent.SetDestination(transform.position);
-            */
-            
-            Debug.DrawRay(transform.position, Vector3.up * 5, Color.red, 5);
         }
         
 
@@ -280,21 +268,8 @@ namespace Characters
                     
                     
                     suggestedForward = direction / distance;
-                    Debug.DrawLine(transform.position, transform.position + direction / distance * 8f, Color.yellow, 10, false);
                     _agent.isStopped = true;
                     StopCoroutine(_currentRoutine);
-                    /*
-                     _agent.SetDestination(transform.position + direction / distance * (distance + 1));
-                     
-                     Debug.DrawRay(transform.position + direction / distance * (distance + 1), Vector3.up * 5, Color.yellow, 5, false);
-                     
-                     _agent.autoBraking = false;
-                     _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-                     _cachedStoppingDistance = _agent.stoppingDistance;
-                     _agent.stoppingDistance = 0;
-                     
-                    _agent.speed = stats.ChaseMoveSpeed * 100f;
-                    */
 
                 }
             }

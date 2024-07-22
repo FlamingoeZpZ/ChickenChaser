@@ -1,5 +1,3 @@
-using System;
-using Characters;
 using UnityEngine;
 using Utilities;
 
@@ -9,17 +7,15 @@ namespace Game
     {
         [SerializeField] private float decayTime = .8f;
         private float _currentDecayTime;
-        private Chicken _chicken;
+        private ITrappable _trappable;
         private Material _myMaterial;
         private bool _isOpened;
         private void Awake()
         {
             if (transform.childCount > 0 && transform.GetChild(0).childCount > 0 &&
-                transform.GetChild(0).GetChild(0).TryGetComponent(out _chicken))
+                transform.GetChild(0).GetChild(0).TryGetComponent(out _trappable))
             {
-                _chicken.transform.parent = transform.GetChild(0);
-                _chicken.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                _chicken.enabled = false; //Disabling the AI component, SHOULD automatically enable the secondary look at component
+                PauseObject();
             }
 
             _myMaterial = GetComponent<MeshRenderer>().material;
@@ -28,7 +24,7 @@ namespace Game
         private void OnTriggerStay(Collider other)
         {
             //When the chicken is freed, its triggering this again, and freeing itself twice because OnTriggerStay runs on the physics ticks
-            if (!_chicken  || !other.attachedRigidbody.TryGetComponent(out Chicken c) || !c.isActiveAndEnabled || _isOpened) return;
+            if (_trappable == null  || !other.attachedRigidbody.TryGetComponent(out ITrappable c) || !c.CanBeTrapped() || _isOpened) return;
             _currentDecayTime += Time.deltaTime * 2;
             _myMaterial.SetFloat(StaticUtilities.FillMatID, _currentDecayTime / decayTime);
             if (_currentDecayTime >= decayTime)
@@ -48,19 +44,24 @@ namespace Game
 
         private void FreeChicken()
         {
-            
-            _chicken.transform.parent = null;
-            _chicken.ReleaseChicken();
+            _trappable.GetTransform().parent = null;
+            _trappable.OnReleased();
             Destroy(gameObject);
         }
 
-        public void AttachChicken(Chicken c)
+        public void AttachChicken(ITrappable c)
         {
-            _chicken = c;
-            c.transform.parent = transform.GetChild(0);
-            c.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            c.enabled = false; //Disabling the AI component, SHOULD automatically enable the secondary look at component
-            c.CaptureChicken();
+            _trappable = c;
+            PauseObject();
+            _trappable.OnCaptured();
+        }
+
+        private void PauseObject()
+        {
+            Transform tr = _trappable.GetTransform();
+            tr.parent = transform.GetChild(0);
+            tr.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            _trappable.OnPreCapture(); //Disabling the AI component, SHOULD automatically enable the secondary look at component
         }
     }
 }

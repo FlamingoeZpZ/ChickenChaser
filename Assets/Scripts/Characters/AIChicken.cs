@@ -43,8 +43,8 @@ namespace Characters
             Animator.SetBool(StaticUtilities.CluckAnimID, true);
             faceTarget.enabled = false;
             //Rb.isKinematic = false;
-            PlayerChicken.onPlayerCaught += MoveToPlayer;
-            PlayerChicken.onPlayerEscaped += MoveToPlayer;
+            PlayerChicken.onPlayerCaught += MoveTo;
+            PlayerChicken.onPlayerEscaped += MoveTo;
             ++NumActiveAIChickens;
             _agent.enabled = true;
             _collider.enabled = true;
@@ -57,8 +57,8 @@ namespace Characters
             Animator.SetBool(StaticUtilities.CluckAnimID, false);
             faceTarget.enabled = true;
             StopAllCoroutines();
-            PlayerChicken.onPlayerCaught -= MoveToPlayer;
-            PlayerChicken.onPlayerEscaped -= MoveToPlayer;
+            PlayerChicken.onPlayerCaught -= MoveTo;
+            PlayerChicken.onPlayerEscaped -= MoveTo;
             //Rb.isKinematic = true;
             --NumActiveAIChickens;
             //Cancel all previous instructions
@@ -67,19 +67,11 @@ namespace Characters
             _collider.enabled = false;
             detection.SetStats(trappedHearing);
 
-            
-            
-            
             Move(Vector2.zero);
             Look(Vector2.zero);
         }
 
-        //Without the player, let's just rush towards the player... If we get caught, oh well.
-        private void MoveToPlayer(Vector3 obj)
-        {
-            print("I'm moving to the player");
-            _agent.SetDestination(obj);
-        }
+
 
         protected override void HandleMovement()
         {
@@ -87,7 +79,7 @@ namespace Characters
             Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, moveSpeed);
         }
 
-        public override void ReleaseChicken()
+        public override void OnReleased()
         {
             enabled = true;
             Animator.enabled = true;
@@ -103,8 +95,8 @@ namespace Characters
             //We should not escape just yet because the AI needs time to actually get to the exit...
             //let's start a coroutine and see if we've escaped.
             StartCoroutine(CheckForEscaped());
-            
-            
+
+            Visibility = 0;
         }
 
         private IEnumerator CheckForEscaped()
@@ -129,9 +121,8 @@ namespace Characters
             
         }
 
-        public override void CaptureChicken()
+        public override void OnCaptured()
         {
-            enabled = false;
             Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, 0);
             Animator.enabled = false;
             HudManager.Instance.OnChickenCaptured();
@@ -146,6 +137,11 @@ namespace Characters
             print("I'm moving towards: " + location);
             _agent.SetDestination(location);
             Animator.SetBool(StaticUtilities.CluckAnimID, false);
+        }
+
+        public void MoveTo(Vector3 location)
+        {
+            _agent.SetDestination(location);
         }
     }
 }

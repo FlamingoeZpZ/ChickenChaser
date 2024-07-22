@@ -5,13 +5,6 @@ using UnityEngine;
 public class WinEffects : MonoBehaviour
 {
 
-    private CinemachineCamera _cam;
-
-    private void Awake()
-    {
-        _cam = GetComponent<CinemachineCamera>();
-    }
-
     void OnEnable()
     {
         PlayerChicken.onPlayerEscaped += OnGameWon;
@@ -24,7 +17,7 @@ public class WinEffects : MonoBehaviour
 
     private void OnGameWon(Vector3 _)
     {
-        _cam.enabled = true;
-        transform.GetChild(0).gameObject.SetActive(true);
+        Debug.Log("Who am I?", gameObject);
+        GetComponent<CinemachineCamera>().enabled = true;
     }
 }

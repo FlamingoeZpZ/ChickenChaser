@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace Characters
 {
-    public abstract class Chicken : MonoBehaviour, IVisualDetectable
+    public abstract class Chicken : MonoBehaviour, IVisualDetectable, ITrappable
     {
 
         [SerializeField] protected ChickenStats stats;
@@ -35,7 +35,7 @@ namespace Characters
         protected AudioSource audioSource;
         protected Collider _collider;
         
-        private float _visibility = 1;
+        protected float Visibility = 1;
 
         private Vector3 slopeNormal;
         //private static Transform _myTransform;
@@ -154,23 +154,45 @@ namespace Characters
 
         public void AddVisibility(float vis)
         {
-            _visibility += vis;
+            Visibility += vis;
         }
 
         public void RemoveVisibility(float vis)
         {
             //Prevent any weirdness
-            _visibility = Mathf.Max(_visibility - vis, 0.1f);
+            Visibility = Mathf.Max(Visibility - vis, 0.1f);
         }
 
         public float GetVisibility()
         {
-            return _visibility;
+            return Visibility;
         }
 
-        public abstract void ReleaseChicken();
-
         public abstract void EscapeAndMoveTo(Vector3 position);
-        public abstract void CaptureChicken();
+        
+        public Transform GetTransform()
+        {
+            return transform;
+        }
+
+        public bool CanBeTrapped()
+        {
+            return isActiveAndEnabled;
+        }
+
+        public virtual void OnCaptured()
+        {
+            
+        }
+
+        public virtual void OnReleased()
+        {
+            
+        }
+
+        public virtual void OnPreCapture()
+        {
+            enabled = false;
+        }
     }
 }

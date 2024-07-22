@@ -9,7 +9,7 @@ public class ChickenTrapLander : MonoBehaviour
 {
     private const float SpawnSpeed = 1.2f; // percent based on starting height. a start of 15 at 70% means the starting speed is 15 * 0.7
     private Rigidbody _rb;
-    private Chicken _caught;
+    private ITrappable _caught;
 
     [SerializeField] private Transform startPoint;
     [SerializeField] private float distance;
@@ -43,7 +43,7 @@ public class ChickenTrapLander : MonoBehaviour
 
 
     // ReSharper disable Unity.PerformanceAnalysis
-    public void Initialize(Vector3 velocity, Chicken getChild)
+    public void Initialize(Vector3 velocity, ITrappable getChild)
     {
         _rb = GetComponent<Rigidbody>();
         _rb.linearVelocity = velocity * SpawnSpeed;
@@ -59,7 +59,7 @@ public class ChickenTrapLander : MonoBehaviour
         yield return new WaitForSeconds(3);
         if (!isActiveAndEnabled) yield break;
         Destroy(gameObject);
-        _caught.ReleaseChicken();
+        _caught.OnReleased();
     }
 
     private void OnDrawGizmosSelected()

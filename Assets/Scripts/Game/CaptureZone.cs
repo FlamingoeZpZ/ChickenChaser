@@ -1,7 +1,6 @@
 using Characters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using Utilities;
 
 namespace Game
@@ -16,7 +15,7 @@ namespace Game
         private Collider _collider;
         private Human _human;
         private Animator _animator;
-        private Chicken _caught;
+        private ITrappable _caught;
         private void Awake()
         {
             _human = GetComponentInParent<Human>();
@@ -28,14 +27,15 @@ namespace Game
         private void OnTriggerEnter(Collider other)
         {
             //Firstly, let's check to see it's a chicken and that chicken is an active chicken
-            if (other.attachedRigidbody.TryGetComponent(out _caught) && _caught.isActiveAndEnabled)
+            if (other.attachedRigidbody.TryGetComponent(out _caught) && _caught.CanBeTrapped())
             {
                 //From here, we need to disable the chicken
-                _caught.enabled = false;
+                _caught.OnPreCapture();
                 
                 //And attach it to our grapple point
-                _caught.transform.SetParent(chickenPoint, true);
-                _caught.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                Transform tr = _caught.GetTransform();
+                tr.SetParent(chickenPoint, true);
+                tr.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
                     
                 //We then need to play the throw chicken animation

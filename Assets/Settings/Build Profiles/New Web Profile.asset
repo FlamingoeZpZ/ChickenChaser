@@ -22,8 +22,6 @@ MonoBehaviour:
     m_path: Assets/Scenes/StaticWorld.unity
   - m_enabled: 1
     m_path: Assets/Scenes/Intro.unity
-  - m_enabled: 1
-    m_path: Assets/Scenes/GameScene.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:
@@ -173,7 +171,13 @@ MonoBehaviour:
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
     - line: '|   bundleVersion: 1.0.0'
-    - line: '|   preloadedAssets: []'
+    - line: '|   preloadedAssets:'
+    - line: '|   - {fileID: -944628639613478452, guid: 2448298a2ba95554ea261900bd3de68b,
+        type: 3}'
+    - line: '|   - {fileID: 11400000, guid: 2416f0fa7ea0cee489209470a7012e59, type:
+        2}'
+    - line: '|   - {fileID: 11400000, guid: fec0420149277d74f8d7a339ae291da5, type:
+        2}'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
     - line: '|   m_HolographicPauseOnTrackingLoss: 1'
@@ -613,6 +617,9 @@ MonoBehaviour:
     - line: '|   - serializedVersion: 3'
     - line: '|     m_BuildTarget: Android'
     - line: '|     m_Formats: 03000000'
+    - line: '|   - serializedVersion: 3'
+    - line: '|     m_BuildTarget: WebGL'
+    - line: '|     m_Formats: 05000000'
     - line: '|   playModeTestRunnerEnabled: 0'
     - line: '|   runPlayModeTestAsEditModeTest: 0'
     - line: '|   actionOnDotNetUnhandledException: 1'

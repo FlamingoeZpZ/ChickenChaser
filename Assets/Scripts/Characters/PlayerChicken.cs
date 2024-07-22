@@ -39,7 +39,7 @@ namespace Characters
             
         }
 
-        public override void ReleaseChicken()
+        public override void OnReleased()
         {
             //The player chicken in this version of the game will always be trapped.
             //It's possible to make it so that the other chickens can free the player, and reenable it.
@@ -63,8 +63,12 @@ namespace Characters
             //Stop movement
             LookDirection = Vector2.zero;
             NavMeshAgent agent = GetComponent<NavMeshAgent>();
-                agent.enabled = true;
-                agent.SetDestination(position);
+            agent.enabled = true;
+            agent.baseOffset = 0.16f;
+            agent.height = 0.32f;
+            agent.radius = 0.2f;
+            agent.agentTypeID = 0;
+            agent.SetDestination(position);
             
             caughtCam.SetActive(false);
             
@@ -74,9 +78,12 @@ namespace Characters
             onPlayerEscaped?.Invoke(transform.position);
             //Tell the UI that we lost
             
+            Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, moveSpeed);
+
+            enabled = false;
         }
 
-        public override void CaptureChicken()
+        public override void OnCaptured()
         {
             print("Player LOST game");
             
@@ -87,9 +94,6 @@ namespace Characters
             //Toggle Camera effects
             caughtCam.SetActive(true);
             
-            //Disable all other controls
-            enabled = false;
-            
             //Tell the GameManager that we lost
             onPlayerCaught?.Invoke(transform.position);
             GameManager.PlayUISound(stats.OnCapture);
@@ -98,6 +102,7 @@ namespace Characters
             //Tell the UI that we lost
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
+            Visibility = 0;
         }
 
 

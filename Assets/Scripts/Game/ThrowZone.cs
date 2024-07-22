@@ -18,7 +18,7 @@ public class ThrowZone : MonoBehaviour
     private const float SpawnRadiusCheck = 0.4f;
     private const float SpawnHeight = 15;
     private Rigidbody _rb;
-    private Chicken _caught;
+    private ITrappable _caught;
 
     private float lifeTime;
 
@@ -63,11 +63,12 @@ public class ThrowZone : MonoBehaviour
         }
     }
 
-    public void Initialize(Vector3 force, Chicken caught)
+    public void Initialize(Vector3 force, ITrappable caught)
     {
         _caught = caught;
-        caught.transform.parent = transform;
-        caught.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        Transform tr = caught.GetTransform();
+        tr.parent = transform;
+        tr.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         
         _rb = GetComponent<Rigidbody>();
         
