@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using AI;
 using Interfaces;
@@ -17,7 +18,9 @@ namespace Characters
         [SerializeField] private HearStats trappedHearing;
         [SerializeField] private HearStats regularHearing;
         private NavMeshAgent _agent;
-        
+
+        public Action OnCaught;
+        public Action OnFree;
 
         public static int NumActiveAIChickens { get; private set; }
 
@@ -33,7 +36,12 @@ namespace Characters
             GameManager.RegisterAIChicken();
             
             //Draw them in the UI too.
-            HudManager.Instance.RegisterChicken();
+            HudManager.Instance.RegisterChicken(this);
+        }
+
+        private void OnDestroy()
+        {
+            HudManager.Instance.RemoveChicken(this);
         }
 
 
@@ -83,7 +91,8 @@ namespace Characters
         {
             enabled = true;
             Animator.enabled = true;
-            HudManager.Instance.OnChickenRescued();
+           OnFree.Invoke();
+           
         }
 
         public override void EscapeAndMoveTo(Vector3 position)
@@ -115,7 +124,9 @@ namespace Characters
             
             //Giga Cheesy, but we need to make sure that the num chickos is right.
             --NumActiveAIChickens;
-            HudManager.Instance.OnChickenEscaped();
+            
+            ScoreManager.Instance.UpdateScore();
+            
             ++NumActiveAIChickens;
             Destroy(gameObject);
             
@@ -125,7 +136,7 @@ namespace Characters
         {
             Animator.SetFloat(StaticUtilities.MoveSpeedAnimID, 0);
             Animator.enabled = false;
-            HudManager.Instance.OnChickenCaptured();
+            OnCaught.Invoke();
             GameManager.PlayUISound(stats.OnCapture);
     
 

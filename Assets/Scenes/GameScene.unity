@@ -1786,6 +1786,7 @@ Transform:
   - {fileID: 1076968069}
   - {fileID: 632624709}
   - {fileID: 1583252812}
+  - {fileID: 1056331420}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &589745473
@@ -1800,72 +1801,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af0fea6fd7ff6df47bd4b7875f6613fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudCanvas: {fileID: 1076968072}
-  endCanvas: {fileID: 1583252815}
   abilityA: {fileID: 464986979}
   abilityB: {fileID: 1596771609}
   abilityC: {fileID: 1306185057}
+  cagedObject: {fileID: 5400743116071316543, guid: 586c96303ee72d7458d12572baf2f6b1,
+    type: 3}
+  unCagedObject: {fileID: 5400743116071316543, guid: aa4f68c4b554fde429941e1aa5ab33bf,
+    type: 3}
+  cagedTransform: {fileID: 928189241}
+  unCagedTransform: {fileID: 1145341790}
   stick: {fileID: 1997388572}
   settingsButton: {fileID: 505099410}
   lookSpeed: 20
   stickDeadZoneY: 0.2
-  unCagedSprite: {fileID: 21300000, guid: 83954a864e57038458dd6ff72da13aa8, type: 3}
-  cagedSprite: {fileID: 21300000, guid: 71ec2a9bc80e5f946a2614ef7e566967, type: 3}
-  templateObject: {fileID: 5400743116071316543, guid: 586c96303ee72d7458d12572baf2f6b1,
-    type: 3}
-  cagedTransform: {fileID: 928189241}
-  unCagedTransform: {fileID: 1145341790}
-  endStatus: {fileID: 2045736428}
-  numChickensSaved: {fileID: 504163019}
-  timeSpent: {fileID: 1116049609}
-  finalScore: {fileID: 997130239}
-  hopeIsNotLost: {fileID: 937210555}
-  mainMenu: {fileID: 187367406}
-  scoreCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.3214081
-      value: 0.24108826
-      inSlope: -0.0045460328
-      outSlope: -0.0045460328
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.50610894
-      outWeight: 0.5741139
-    - serializedVersion: 3
-      time: 0.70439345
-      value: 0.6961773
-      inSlope: 0.014574099
-      outSlope: 0.014574099
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 1
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0.9
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  expectedEndTime: 600
-  maximumTimePoints: 10000
-  pointsPerSavedChicken: 2500
 --- !u!1 &632624706
 GameObject:
   m_ObjectHideFlags: 0
@@ -4221,6 +4169,85 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1056331419
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1056331420}
+  - component: {fileID: 1056331421}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1056331420
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056331419}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 589745472}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1056331421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056331419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9a25c27e2ff4393bb2ada49718e4365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hudCanvas: {fileID: 1076968072}
+  endCanvas: {fileID: 1583252815}
+  scoreCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  expectedEndTime: 300
+  maximumTimePoints: 10000
+  pointsPerSavedChicken: 5000
+  endStatus: {fileID: 2045736428}
+  numChickensSaved: {fileID: 504163019}
+  timeSpent: {fileID: 1116049609}
+  finalScore: {fileID: 997130239}
+  hopeIsNotLost: {fileID: 937210555}
+  mainMenu: {fileID: 187367406}
 --- !u!1 &1076968068
 GameObject:
   m_ObjectHideFlags: 0

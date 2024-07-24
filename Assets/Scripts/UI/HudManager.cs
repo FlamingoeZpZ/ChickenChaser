@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Globalization;
+using System.Collections.Generic;
 using Characters;
-using Managers;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,52 +10,21 @@ namespace UI
     public class HudManager : MonoBehaviour
     {
         public static HudManager Instance { get; private set; }
-    
-        [Header("HUDs")]
-        [SerializeField] private Canvas hudCanvas;
-        [SerializeField] private Canvas endCanvas;
         
         [Header("Interactables")]
         [SerializeField] private AbilityUIBind abilityA;
         [SerializeField] private AbilityUIBind abilityB;
         [SerializeField] private AbilityUIBind abilityC;
         
-        //We want these variables to exist in the Unity editor so we can customize, but not to exist in builds that don't need them.
-#if (!UNITY_STANDALONE && !UNITY_WEBGL) || UNITY_EDITOR
-        [SerializeField] private Joystick stick;
-        [SerializeField] private Button settingsButton;
-        [SerializeField] private float lookSpeed = 20; // Just to make looking around a bit easier
-        [SerializeField, Range(0,1)] private float stickDeadZoneY = 0.02f; // Just to make looking around a bit easier
-        private float _lookMultiplier;
-#endif
-        
         private PlayerChicken _owner;
-
-
+        
         [Header("Chickens")]
-        [SerializeField] private Sprite unCagedSprite;
-        [SerializeField] private Sprite cagedSprite;
-        [SerializeField] private Image templateObject;
+        [SerializeField] private Image cagedObject;
+        [SerializeField] private Image unCagedObject;
         [SerializeField] private Transform cagedTransform;
         [SerializeField] private Transform unCagedTransform;
 
-        [Header("End Canvas")] 
-        [SerializeField] private TextMeshProUGUI endStatus;
-        [SerializeField] private TextMeshProUGUI numChickensSaved;
-        [SerializeField] private TextMeshProUGUI timeSpent;
-        [SerializeField] private TextMeshProUGUI finalScore;
-        [SerializeField] private GameObject hopeIsNotLost;
-        [SerializeField] private Button mainMenu;
-        
-        //This should actually be it's own script.
-        [Header("Score")] 
-        [SerializeField] private AnimationCurve scoreCurve; // 0 is Quick, 1 is very long
-        [SerializeField] private float expectedEndTime;
-        [SerializeField] private int maximumTimePoints = 10000;
-        [SerializeField] private int pointsPerSavedChicken = 1000;
-        private float _cachedTime;
-        private bool _canLoadMenu;
-        private bool _cachedDidWin;
+        private readonly Dictionary<AIChicken, Tuple<GameObject, GameObject>> _hudChickens = new();
         
         
         private void Awake()
@@ -72,10 +38,7 @@ namespace UI
 
             Instance = this;
            
-            hudCanvas.gameObject.SetActive(true);
-            endCanvas.gameObject.SetActive(false);
-            
-            OnUIScaleChanged(SettingsManager.currentSettings.UIScale);
+
             
 #if !UNITY_STANDALONE && !UNITY_WEBGL
             stick.gameObject.SetActive(true);
@@ -83,98 +46,7 @@ namespace UI
             settingsButton.onClick.AddListener(EnterSettings);
 #endif
         }
-        private void OnEnable()
-        {
-            SettingsManager.SaveFile.onUIScaleChanged += OnUIScaleChanged;
-#if !UNITY_STANDALONE && !UNITY_WEBGL
-            SettingsManager.SaveFile.onLookSenseChanged += OnLookSensChanged;
-            OnLookSensChanged(SettingsManager.currentSettings.LookSensitivity);
-#endif
-
-            PlayerChicken.onPlayerCaught += LoseGame;
-            PlayerChicken.onPlayerEscaped += WinGame;
-            PlayerChicken.onPlayerRescued += OnPlayerRescued;
-
-        }
-
-        private void OnDisable()
-        {
-            SettingsManager.SaveFile.onUIScaleChanged -= OnUIScaleChanged;
-#if !UNITY_STANDALONE && !UNITY_WEBGL
-            SettingsManager.SaveFile.onLookSenseChanged -= OnLookSensChanged;
-#endif
-            
-            PlayerChicken.onPlayerCaught -= LoseGame;
-            PlayerChicken.onPlayerEscaped -= WinGame;
-            PlayerChicken.onPlayerRescued -= OnPlayerRescued;
-        }
-    
-        private void OnUIScaleChanged(float obj)
-        {
-            endCanvas.scaleFactor = obj;
-            hudCanvas.scaleFactor = obj;
-        }
-
-        #region EndGame
-
-        private void OnPlayerRescued()
-        {
-            _canLoadMenu = false;
-            StopAllCoroutines();
-            hudCanvas.gameObject.SetActive(true);
-            endCanvas.gameObject.SetActive(false);
-        }
-
-        private void WinGame(Vector3 _) => OnBeginEndGame(true);
-        private void LoseGame(Vector3 _) => OnBeginEndGame(false);
         
-        private void OnBeginEndGame(bool won)
-        {
-            _canLoadMenu = true;
-            StartCoroutine(EndGameTimer());
-            hudCanvas.gameObject.SetActive(false);
-            endCanvas.gameObject.SetActive(true);
-
-            endStatus.text = won ? "ESCAPED" : "CAUGHT";
-            //This is currently not recieving updates when a regular chicken escapes...
-            _cachedTime = GameManager.TimeInLevel;
-            _cachedDidWin = won;
-            UpdateScore();
-            //We need a method to tell whether we won.
-        }
-
-        private void UpdateScore()
-        {
-            numChickensSaved.text = GameManager.NumChickensSaved + "/" + GameManager.NumChickens;
-            TimeSpan s = TimeSpan.FromSeconds(_cachedTime);
-            timeSpent.text = $"{s.Minutes}m {s.Seconds}s {s.Milliseconds}ms";
-            finalScore.text = ((_cachedDidWin?1 - scoreCurve.Evaluate(_cachedTime / expectedEndTime):0) * maximumTimePoints + (pointsPerSavedChicken * GameManager.NumChickensSaved)).ToString(CultureInfo.InvariantCulture);
-
-            bool x = AIChicken.NumActiveAIChickens == 0;
-            print("There are : " + AIChicken.NumActiveAIChickens +" Active chickens");
-            //Determine which button to show
-            hopeIsNotLost.SetActive(!x);
-            mainMenu.gameObject.SetActive(x);
-            
-            mainMenu.Select();
-        }
-
-        public void LoadMainMenu()
-        {
-            //Only allow this to run once.
-            if (!_canLoadMenu) return;
-            GameManager.LoadMainMenu();
-            _canLoadMenu = false;
-        }
-
-        //Simple timer
-        private IEnumerator EndGameTimer()
-        {
-            yield return new WaitForSeconds(90); 
-            LoadMainMenu();
-        }
-
-        #endregion
         
         #region Registering Chickens
         public void BindPlayer(PlayerChicken player)
@@ -187,44 +59,69 @@ namespace UI
             abilityC.SetTargetAbility(player.JumpAbility);
         }
 
-        
-
-        public void RegisterChicken()
+        public void RegisterChicken(AIChicken chicken)
         {
-            print("Registering Chicken");
-            Instantiate(templateObject, cagedTransform).sprite = cagedSprite;
+            GameObject a = Instantiate(cagedObject, cagedTransform).gameObject;
+            GameObject b = Instantiate(unCagedObject, unCagedTransform).gameObject;
+
+            a.SetActive(false);
+            
+            chicken.OnCaught += () => OnChickenCaptured(chicken);
+            chicken.OnFree += () => OnChickenRescued(chicken);
+            
+            _hudChickens.Add(chicken, new (a,b));
         }
 
-        public void OnChickenRescued()
+        public void RemoveChicken(AIChicken chicken)
         {
-            print("Chicken Rescued");
-            Transform t = cagedTransform.GetChild(0);
-            t.SetParent(unCagedTransform ,false) ;
-            t.GetComponent<Image>().sprite = unCagedSprite;
+            Destroy(_hudChickens[chicken].Item1);
+            Destroy(_hudChickens[chicken].Item2);
+            _hudChickens.Remove(chicken);
         }
 
-        public void OnChickenCaptured()
+        private void OnChickenRescued(AIChicken chicken)
         {
-            print("Chicken Captured");
-            Transform t = unCagedTransform.GetChild(0);
-            t.SetParent(cagedTransform ,false) ;
-            t.GetComponent<Image>().sprite = cagedSprite;
-            UpdateScore();
+            _hudChickens[chicken].Item1.SetActive(true);
+            _hudChickens[chicken].Item2.SetActive(false);
         }
 
-        public void OnChickenEscaped()
+        private void OnChickenCaptured(AIChicken chicken)
         {
-            print("Chicken Escaped");
-            Destroy(unCagedTransform.GetChild(0).gameObject);
-            UpdateScore();
+            _hudChickens[chicken].Item1.gameObject.SetActive(false);
+            _hudChickens[chicken].Item2.gameObject.SetActive(true);
         }
+
+
         #endregion
         
         #region Mobile
+        
+        //We want these variables to exist in the Unity editor so we can customize, but not to exist in builds that don't need them.
+#if (!UNITY_STANDALONE && !UNITY_WEBGL) || UNITY_EDITOR
+        [SerializeField] private Joystick stick;
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private float lookSpeed = 20; // Just to make looking around a bit easier
+        [SerializeField, Range(0,1)] private float stickDeadZoneY = 0.02f; // Just to make looking around a bit easier
+        private float _lookMultiplier;
+#endif
+        
 #if !UNITY_STANDALONE && !UNITY_WEBGL
 
         private static Vector2 _displayScale;
         
+        private void OnEnable()
+        {
+            SettingsManager.SaveFile.onLookSenseChanged += OnLookSensChanged;
+            OnLookSensChanged(SettingsManager.currentSettings.LookSensitivity);
+
+        }
+
+        private void OnDisable()
+        {
+            SettingsManager.SaveFile.onLookSenseChanged -= OnLookSensChanged;
+
+        }
+
         #if UNITY_EDITOR
         [SerializeField] private bool editorPhoneMode = true;
         #endif
