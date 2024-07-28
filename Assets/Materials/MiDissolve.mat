@@ -43,7 +43,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fill: 0
+    - _Fill: 1
     - _Metallic: 0.494
     - _NoiseScale1: 500
     - _NoiseScale2: 10

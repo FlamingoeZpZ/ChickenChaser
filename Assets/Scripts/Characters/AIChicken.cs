@@ -57,6 +57,7 @@ namespace Characters
             _agent.enabled = true;
             _collider.enabled = true;
             detection.SetStats(regularHearing);
+            ScoreManager.Instance.UpdateScore();
         }
 
         private void OnDisable()
@@ -77,6 +78,7 @@ namespace Characters
 
             Move(Vector2.zero);
             Look(Vector2.zero);
+            ScoreManager.Instance.UpdateScore();
         }
 
 
